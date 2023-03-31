@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPM\\Unreal_MPM.Build.cs",
+		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPM.Target.cs",
+		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPMEditor.Target.cs"
+	],
+	"EngineVersion": "5.0.3"
+}

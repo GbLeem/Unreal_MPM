@@ -1,0 +1,17 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-Unreal_MPM.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\Unreal_MPMEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\MPM2D.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\Unreal_MPM.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\Unreal_MPMGameModeBase.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\MPM2D.gen.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\Unreal_MPM.init.gen.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\Unreal_MPMGameModeBase.gen.cpp.obj"
+"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\Default.rc2.res"
+/OUT:"E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM.lib"

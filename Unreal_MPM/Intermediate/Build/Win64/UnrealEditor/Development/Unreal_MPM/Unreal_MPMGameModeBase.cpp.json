@@ -1,0 +1,19 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\source\\unreal_mpm\\unreal_mpmgamemodebase.cpp",
+        "ProvidedModule": "",
+        "PCH": "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unreal_mpmeditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\development\\unreal_mpm\\definitions.unreal_mpm.h",
+            "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\source\\unreal_mpm\\unreal_mpmgamemodebase.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "e:\\program\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\serverstatreplicator.generated.h",
+            "e:\\program\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\gamemodebase.generated.h",
+            "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\inc\\unreal_mpm\\unreal_mpmgamemodebase.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

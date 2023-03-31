@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\Unreal_MPM.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\Unreal_MPM.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\Unreal_MPMEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Config\HoloLens">
+      <UniqueIdentifier>{4C8DD267-CDE7-336F-8602-F5F485D22BAB}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\HoloLens\HoloLensEngine.ini">
+      <Filter>Config\HoloLens</Filter>
+    </None>
+    <Filter Include="Source\Unreal_MPM">
+      <UniqueIdentifier>{F9DD63A5-5BE2-3855-9210-229C8C21F4AD}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\Unreal_MPM\MPM2D.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\MPM2D.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\Unreal_MPM\Unreal_MPM.Build.cs">
+      <Filter>Source\Unreal_MPM</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\Unreal_MPM\Unreal_MPM.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\Unreal_MPM.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Unreal_MPM\Unreal_MPMGameModeBase.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\Unreal_MPMGameModeBase.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
