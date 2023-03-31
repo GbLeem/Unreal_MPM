@@ -62,4 +62,8 @@ public:
 
 	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TArray<FVector2f> Weights;
+
+
+
+	//math
 };

@@ -57,14 +57,43 @@ void AMPM2D::Each_Simulation_Step()
 		//for all surrounding 9 cells
 		for (UINT gx = 0; gx < 3; ++gx)
 		{
-			for (UINT gy = 0; gy; ++gy)
+			for (UINT gy = 0; gy < 3; ++gy)
 			{
 				float weight = Weights[gx].X * Weights[gy].Y;
 
 				FIntPoint cell_x = FIntPoint(cell_index.X + gx - 1, cell_index.Y + gy - 1);
 				FVector2f cell_dist = FVector2f(cell_x.X - p.x.X, cell_x.Y - p.x.Y) + 0.5;
-				//FVector2f Q = FVector2f::DotProduct(p.C, cell_dist)
+				//FVector2f Q = FVector2D(p.C.GetColumn(0) * cell_dist.X ,p.C.GetColumn(0) * cell_dist.Y); // matrix 2*2 와 vector 곱
+				FVector2f Q = 0;
+
+				float mass_contrib = weight * p.mass;
+
+				//converting 2D index to 1D
+				int New_cell_index = static_cast<int>(cell_x.X) * grid_res + static_cast<int>(cell_x.Y);
+				Cell cell = grid[New_cell_index];
+
+				//scatter mass to the grid
+				cell.mass += mass_contrib;
+
+				cell.v += mass_contrib * (p.v + Q);
+				grid[New_cell_index] = cell;
 			}
+		}
+	}
+
+
+	//grid velocity update
+	for (int i = 0; i < num_cells; ++i)
+	{
+		auto cell = grid[i];
+
+		if (cell.mass > 0)
+		{
+			//convert momentum to velocity, apply gravity
+			cell.v /= cell.mass;
+			cell.v += dt * FVector2f(0, gravity);
+
+			//boundary conditions
 		}
 	}
 }
