@@ -1,18 +1,16 @@
 E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Source\Unreal_MPM\Unreal_MPMGameModeBase.cpp
 /I .
-/I E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Inc\Unreal_MPM
-/I E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Source
-/I Runtime
-/I Runtime\TraceLog\Public
-/I Runtime\Core\Public
-/I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject
-/I Runtime\CoreUObject\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\Engine
+/I Runtime
 /I ..\Shaders\Shared
 /I Runtime\Engine\Classes
 /I Runtime\Engine\Public
+/I Runtime\TraceLog\Public
+/I Runtime\Core\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreOnline
 /I Runtime\CoreOnline\Public
+/I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject
+/I Runtime\CoreUObject\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\NetCore
 /I Runtime\Net
 /I Runtime\Net\Core\Classes
@@ -253,6 +251,8 @@ E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Source\Unreal_MPM\Unreal_MPM
 /I Runtime\ClothingSystemRuntimeInterface\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\AnimationDataController
 /I Developer\AnimationDataController\Public
+/I E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Inc\Unreal_MPM
+/I E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Source
 /I ThirdParty\mimalloc\include
 /I ThirdParty\LibTiff\Source\Win64
 /I ThirdParty\LibTiff\Source

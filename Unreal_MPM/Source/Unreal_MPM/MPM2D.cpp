@@ -94,7 +94,74 @@ void AMPM2D::Each_Simulation_Step()
 			cell.v += dt * FVector2f(0, gravity);
 
 			//boundary conditions
+			int x = i / grid_res;
+			int y = i % grid_res;
+			if (x<2 || x>grid_res - 3)
+			{
+				cell.v.X = 0;
+			}
+			if (y<2 || y>grid_res - 3)
+			{
+				cell.v.Y = 0;
+			}
+
+			grid[i] = cell;
 		}
+		grid[i] = cell;
+	}
+
+	//G2P
+	for (int i = 0; i < num_particles; ++i)
+	{
+		auto p = particles[i];
+
+		//reset particle velocity. we calculate it from scratch each step using the grid
+		p.v.Zero();
+
+		//quadratic interpolation weights
+		FIntPoint cell_index2 = static_cast<FIntPoint>(p.x.X, p.x.Y);
+		FVector2f cell_diff2 = (p.x - cell_index2) - 0.5f;
+
+		Weights[0] = 0.5f * FVector2f(FMath::Pow(0.5f - cell_diff2.X, 2), FMath::Pow(0.5f - cell_diff2.Y, 2));
+		Weights[1] = 0.75f * FVector2f(FMath::Pow(cell_diff2.X, 2), FMath::Pow(cell_diff2.Y, 2));
+		Weights[2] = 0.5f * FVector2f(FMath::Pow(0.5f + cell_diff2.X, 2), FMath::Pow(0.5f + cell_diff2.Y, 2));
+
+
+		//APIC
+		FMatrix2x2 B = {0,0,0,0};
+		
+		for (UINT gx = 0; gx < 3; ++gx)
+		{
+			for (UINT gy = 0; gy < 3; ++gy)
+			{
+				float weight = Weights[gx].X * Weights[gy].Y;
+
+				FIntPoint cell_x = FIntPoint(cell_index2.X + gx - 1, cell_index2.Y + gy - 1);
+				int cell_index = static_cast<int>(cell_x.X) * grid_res + static_cast<int>(cell_x.Y);
+
+				FVector2f dist = (cell_x.X - p.x.X, cell_x.Y - p.x.Y) + 0.5f;
+				FVector2f weighted_velocity = grid[cell_index].v * weight;
+
+				//APIC paper equation 10
+				auto term = FMatrix2x2(weighted_velocity.X * dist.X, weighted_velocity.Y * dist.X, weighted_velocity.X * dist.Y, weighted_velocity.Y * dist.Y);
+				B = term;
+
+				p.v += weighted_velocity;
+			}
+		}
+		float a, b, c, d;
+		B.GetMatrix(a, b, c, d);
+
+		//p.C = { a * 4, b * 4, c * 4, d * 4 };
+
+		//adverty particles
+		p.x += p.v * dt;
+
+		//safety clamp
+		p.x.X = FMath::Clamp(p.x.X, 1, grid_res-2);
+		p.x.Y = FMath::Clamp(p.x.Y, 1, grid_res - 2);
+
+		particles[i] = p;
 	}
 }
 

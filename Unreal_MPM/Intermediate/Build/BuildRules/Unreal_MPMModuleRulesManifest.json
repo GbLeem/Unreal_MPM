@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPM\\Unreal_MPM.Build.cs",
-		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPM.Target.cs",
-		"E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPMEditor.Target.cs"
+		"C:\\LEEM\\KHU\\23-1\\Capstone\\Capstone_MPM_git\\Unreal_MPM\\Source\\Unreal_MPM\\Unreal_MPM.Build.cs",
+		"C:\\LEEM\\KHU\\23-1\\Capstone\\Capstone_MPM_git\\Unreal_MPM\\Source\\Unreal_MPM.Target.cs",
+		"C:\\LEEM\\KHU\\23-1\\Capstone\\Capstone_MPM_git\\Unreal_MPM\\Source\\Unreal_MPMEditor.Target.cs"
 	],
 	"EngineVersion": "5.0.3"
 }
