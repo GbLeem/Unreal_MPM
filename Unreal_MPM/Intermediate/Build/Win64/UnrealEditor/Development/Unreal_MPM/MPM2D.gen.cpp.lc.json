@@ -7,6 +7,14 @@
         "Includes": [
             "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\development\\unreal_mpm\\definitions.unreal_mpm.h",
             "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\source\\unreal_mpm\\mpm2d.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\components\\instancedstaticmeshcomponent.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\public\\elements\\sminstance\\sminstancemanager.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\public\\elements\\sminstance\\sminstanceelementid.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\public\\instancedstaticmeshdelegates.h",
+            "e:\\program\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\sminstanceelementid.generated.h",
+            "e:\\program\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\sminstancemanager.generated.h",
+            "e:\\program\\ue_5.0\\engine\\source\\runtime\\engine\\public\\primitiveinstanceupdatecommand.h",
+            "e:\\program\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\instancedstaticmeshcomponent.generated.h",
             "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\inc\\unreal_mpm\\mpm2d.generated.h"
         ],
         "ImportedModules": [],

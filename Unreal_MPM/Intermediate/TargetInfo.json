@@ -2,12 +2,12 @@
 	"Targets": [
 		{
 			"Name": "Unreal_MPM",
-			"Path": "C:\\LEEM\\KHU\\23-1\\Capstone\\Capstone_MPM_git\\Unreal_MPM\\Source\\Unreal_MPM.Target.cs",
+			"Path": "E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPM.Target.cs",
 			"Type": "Game"
 		},
 		{
 			"Name": "Unreal_MPMEditor",
-			"Path": "C:\\LEEM\\KHU\\23-1\\Capstone\\Capstone_MPM_git\\Unreal_MPM\\Source\\Unreal_MPMEditor.Target.cs",
+			"Path": "E:\\MY_GAME\\UNREAL\\Capstone_UnrealMPM_git\\Unreal_MPM\\Source\\Unreal_MPMEditor.Target.cs",
 			"Type": "Editor"
 		}
 	]

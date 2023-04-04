@@ -1,11 +1,11 @@
 {
     "Version": "1.1",
     "Data": {
-        "Source": "c:\\leem\\khu\\23-1\\capstone\\capstone_mpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\inc\\unreal_mpm\\unreal_mpm.init.gen.cpp",
+        "Source": "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\inc\\unreal_mpm\\unreal_mpm.init.gen.cpp",
         "ProvidedModule": "",
-        "PCH": "c:\\leem\\khu\\23-1\\capstone\\capstone_mpm_git\\unreal_mpm\\intermediate\\build\\win64\\unreal_mpmeditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "PCH": "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unreal_mpmeditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
         "Includes": [
-            "c:\\leem\\khu\\23-1\\capstone\\capstone_mpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\development\\unreal_mpm\\definitions.unreal_mpm.h"
+            "e:\\my_game\\unreal\\capstone_unrealmpm_git\\unreal_mpm\\intermediate\\build\\win64\\unrealeditor\\development\\unreal_mpm\\definitions.unreal_mpm.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

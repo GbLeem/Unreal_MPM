@@ -38,6 +38,30 @@
     <ClInclude Include="..\..\Source\Unreal_MPM\MPM2D.h">
       <Filter>Source\Unreal_MPM</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\Unreal_MPM\MPM3D.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\MPM3D.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Unreal_MPM\MPM_Cell.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\MPM_Cell.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Unreal_MPM\MPM_Grid.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\MPM_Grid.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\Unreal_MPM\MPM_Particle.cpp">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\Unreal_MPM\MPM_Particle.h">
+      <Filter>Source\Unreal_MPM</Filter>
+    </ClInclude>
     <None Include="..\..\Source\Unreal_MPM\Unreal_MPM.Build.cs">
       <Filter>Source\Unreal_MPM</Filter>
     </None>
