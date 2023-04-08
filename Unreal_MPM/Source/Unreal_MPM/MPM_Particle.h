@@ -1,6 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
+
+#include "Components/InstancedStaticMeshComponent.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -24,20 +24,34 @@ public:
 	// Sets default values for this actor's properties
 	AMPM_Particle();
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+protected:
+	virtual void BeginPlay() override;
 public:
+	virtual void Tick(float DeltaTime) override;
+
+protected:
 	PTYPE type;
 	float mass;
 	float volume;
 
 	FVector3d pos;
 	FVector3d vel;
-	FMatrix B;
+
+	int NumParticles;
+	/*FMatrix B;
 	FMatrix D;
 	FMatrix Fe;
-	FMatrix Fp;
+	FMatrix Fp;*/
 	
-	FVector3d padding;
+	/*FVector3d padding;
 
-	FVector3d Pos = pos;
+	FVector3d Pos = pos;*/
 	
+	//UPROPERTY(Transient) //직렬화
+	//TArray<FTransform> Transforms;
+
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* InstancedParticle;
 };

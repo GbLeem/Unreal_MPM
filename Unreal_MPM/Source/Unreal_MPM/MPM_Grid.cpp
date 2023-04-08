@@ -7,8 +7,7 @@
 AMPM_Grid::AMPM_Grid()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 AMPM_Grid::AMPM_Grid(FVector3f dimension, FVector3f cellspacing, FVector3f leftBottom, CenterType centerType)
