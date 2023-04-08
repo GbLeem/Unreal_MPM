@@ -5,9 +5,12 @@
 
 // Sets default values
 AMPM_Cell::AMPM_Cell()
+	:m_velocity()
+	,m_mass()
+	,m_padding()
+	,m_gridResolution(64)
 {
  
-
 }
 
 

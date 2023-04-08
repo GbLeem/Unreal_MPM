@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include "MPM_Cell.h"
-#include "MPM_Particle.h"
-#include "MPM_Grid.h"
-
-#include "Components/InstancedStaticMeshComponent.h"
+//#include "MPM_Cell.h"
+//#include "MPM_Particle.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -18,23 +15,6 @@ class UNREAL_MPM_API AMPM3D : public AActor
 	GENERATED_BODY()
 	
 public:	
-
-	enum ParticleData
-	{
-		POSITION,
-		VELOCITY,
-		MASS,
-		VOLUME
-	};
-	
-	enum ParticleType
-	{
-		Inactive = 0,
-		Elastic,
-		Snow,
-		Liquid
-	};
-
 	AMPM3D();
 	virtual ~AMPM3D();
 	void Initialize();
@@ -51,35 +31,14 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
+public:
 	struct Cell
 	{
 
 	};
-
-	struct Grid
+	
+	struct Particle
 	{
-
 	};
-
-	//for cell
-	float m_cMass;
-	FVector3f m_cMv;
-	FVector3f m_cVel;
-	FVector3f m_cForce;
-
-	FVector2f m_cPadding;
-
-	//for particle
-	ParticleType m_pType;
-	float m_pMass;
-	float m_pVolume;
-	FVector3f m_pPos;
-	FVector3f m_pVel;
-	FMatrix m_pB;
-	FMatrix m_pD;
-	FMatrix m_pFe; //
-	FMatrix m_pFp; //deformation gradient on particle p
-
-	FVector3f m_Ppadding;
-
+	
 };

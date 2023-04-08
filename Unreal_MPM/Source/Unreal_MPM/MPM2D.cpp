@@ -34,7 +34,6 @@ void AMPM2D::Tick(float DeltaTime)
 
 void AMPM2D::Initialize()
 {
-	
 	TArray<FVector2f> temp_positions;
 	const float spacing = 1.0f;
 	const int box_x = 16;

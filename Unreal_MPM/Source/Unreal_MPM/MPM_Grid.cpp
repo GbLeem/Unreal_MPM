@@ -10,11 +10,6 @@ AMPM_Grid::AMPM_Grid()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-AMPM_Grid::AMPM_Grid(FVector3f dimension, FVector3f cellspacing, FVector3f leftBottom, CenterType centerType)
-{
-
-}
-
 // Called when the game starts or when spawned
 void AMPM_Grid::BeginPlay()
 {

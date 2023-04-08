@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "MPM_Particle.generated.h"
 
+#define NUM_PARTICLE 64
+
 UENUM()
 enum class PTYPE
 {
@@ -25,33 +27,55 @@ public:
 	AMPM_Particle();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+	void InitGrid();
+	void Simulate();
 
 protected:
 	virtual void BeginPlay() override;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
-protected:
-	PTYPE type;
-	float mass;
-	float volume;
+public:
+	struct Particle
+	{
+		FVector2f x; // position
+		FVector2f v; // velocity
+		FMatrix2x2 C; // affine momentum matrix, unused in this file
+		float mass;
+		float padding; // just for performance
+	};
 
-	FVector3d pos;
-	FVector3d vel;
+	struct Cell
+	{
+		FVector2f v; // velocity
+		float mass;
+		float padding; // just for performance
+	};
+
+protected:
+	//TArray<FTransform> Transforms;
+	//UPROPERTY(Transient) //직렬화
 
 	int NumParticles;
-	/*FMatrix B;
-	FMatrix D;
-	FMatrix Fe;
-	FMatrix Fp;*/
-	
-	/*FVector3d padding;
 
-	FVector3d Pos = pos;*/
-	
-	//UPROPERTY(Transient) //직렬화
-	//TArray<FTransform> Transforms;
+	UPROPERTY(VisibleAnywhere)
+	int grid_res;
+
+	UPROPERTY(VisibleAnywhere)
+	int num_cells = grid_res * grid_res;
 
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedParticle;
+
+	TArray<Particle*> m_pParticles;
+	TArray<Cell*> m_pGrid;
+
+	TArray<FVector2f> m_weights;
+
+private:
+	/*inline FMatrix2x2 operator*(const FVector2f& other)
+	{
+		
+	}*/
 };

@@ -15,10 +15,12 @@ public:
 	AMPM_Cell();
 
 public:
-	float mass;
-	FVector3d mv;
-	FVector3d vel;
-	FVector3d force;
-	
-	FVector2d padding;
+	FVector3d m_velocity;
+	float m_mass;
+	float m_padding;
+
+	UPROPERTY(VisibleAnywhere)
+	int m_gridResolution;
+
+	const int m_numCells = m_gridResolution * m_gridResolution;
 };

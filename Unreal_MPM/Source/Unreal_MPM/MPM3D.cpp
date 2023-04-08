@@ -10,8 +10,8 @@ AMPM3D::AMPM3D()
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bTickEvenWhenPaused = false;
 
-	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
-	SetRootComponent(InstancedStaticMeshComponent);
+	//InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
+	//SetRootComponent(InstancedStaticMeshComponent);
 	
 }
 
@@ -21,7 +21,8 @@ AMPM3D::~AMPM3D()
 
 void AMPM3D::Initialize()
 {
-	//InstancedStaticMeshComponent->AddInstance(FTransform());
+	//init square
+
 
 }
 
@@ -36,10 +37,6 @@ void AMPM3D::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//InstancedStaticMeshComponent->SetCustomDataValue(0, 0, 1.f, true);
-
-	//custom data를 추가적으로 더해줄 수 있다.
-	//InstancedStaticMeshComponent->AddInstance();
 }
 
 // Called every frame
