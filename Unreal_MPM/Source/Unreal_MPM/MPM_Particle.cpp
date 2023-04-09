@@ -2,8 +2,8 @@
 
 // Sets default values
 AMPM_Particle::AMPM_Particle()
-	:NumParticles()
-	,grid_res(64)
+	:NumParticlesForInstancedStaticMesh(64)
+	,grid_res()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bTickEvenWhenPaused = true;
@@ -14,6 +14,10 @@ AMPM_Particle::AMPM_Particle()
 	InstancedParticle->SetMobility(EComponentMobility::Movable);
 	InstancedParticle->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedParticle->SetGenerateOverlapEvents(false);
+}
+
+AMPM_Particle::~AMPM_Particle()
+{
 
 }
 
@@ -25,11 +29,11 @@ void AMPM_Particle::OnConstruction(const FTransform& Transform)
 	{
 		TArray<FTransform> Transforms;
 	
-		Transforms.Empty(NumParticles);
+		Transforms.Empty(NumParticlesForInstancedStaticMesh);
 		//TransformContainer.reserve(NumParticles);
-		for (int index = 0; index < NumParticles / 8; ++index)
+		for (int index = 0; index < NumParticlesForInstancedStaticMesh / 8; ++index)
 		{
-			for (int index2 = 0; index2 < NumParticles / 8; ++index2)
+			for (int index2 = 0; index2 < NumParticlesForInstancedStaticMesh / 8; ++index2)
 			{
 				Transforms.Add(FTransform(FVector(100.f * index, 100.f*index2, 0.f)));
 			}
@@ -72,6 +76,7 @@ void AMPM_Particle::InitGrid()
 	}
 	NumParticles = TempPositions.Num();
 
+	m_pParticles.Reserve(NumParticles);
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
@@ -82,13 +87,19 @@ void AMPM_Particle::InitGrid()
 		p->v = FVector2f(RandNum - 0.5f, RandNum - 0.5f + 2.75f) * 0.5f;
 		p->C = FMatrix2x2(1, 0, 0, 1); //identity matrix
 		p->mass = 1.0f;
+
+		m_pParticles.Add(p);
 		//m_pParticles[i] = p; //[TODO] index error -> maybe need to reserve TArray's size
 	}
 
-	//for (int i = 0; i < num_cells; ++i) 
-	//{
-	//	//m_pGrid[i] = new Cell(); [TODO] index error
-	//}
+	for (int i = 0; i < num_cells; ++i) 
+	{
+		Cell* TempCell = new Cell();
+		m_pGrid.Add(TempCell);
+		//m_pGrid[i] = new Cell(); [TODO] index error
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Particle Num: %d"), m_pParticles.Num());
 }
 
 void AMPM_Particle::Simulate()
@@ -107,7 +118,7 @@ void AMPM_Particle::Simulate()
 		FIntPoint cell_idx = static_cast<FIntPoint>(p->x.X, p->x.Y);
 		FVector2f cell_diff = (p->x - cell_idx) - 0.5f;
 		m_weights[0] = { 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) };
-		m_weights[1] = { 0.75f * FMath::Pow(cell_diff.X, 2), 0.75f * FMath::Pow(cell_diff.Y, 2) };
+		m_weights[1] = { 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) };
 		m_weights[2] = { 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) };
 
 
@@ -139,12 +150,95 @@ void AMPM_Particle::Simulate()
 			
 		}
 	}
+
+	int indexOfCell = 0;
+
+	//grid velocity update
+	for (auto& c : m_pGrid)
+	{
+		if (c->mass > 0)
+		{
+			//convert momentum to velocity, apply gravity
+			c->v /= c->mass;
+			c->v += dt * FVector2f(0, m_gravity);
+
+			//boundary conditions
+			int x = indexOfCell / grid_res;
+			int y = indexOfCell % grid_res;
+			
+			if (x<2 || x>grid_res - 3)
+			{
+				c->v.X = 0;
+			}
+			if (y<2 || y>grid_res - 3)
+			{
+				c->v.Y = 0;
+			}
+		}
+		indexOfCell += 1;
+	}
+
+	//G2P
+	for (auto& p : m_pParticles)
+	{
+		// reset particle velocity. we calculate it from scratch each step using the grid
+		p->v = { 0.f,0.f };
+
+		// quadratic interpolation weights
+		FIntPoint cell_idx = static_cast<FIntPoint>(p->x.X, p->x.Y);
+		FVector2f cell_diff = (p->x - cell_idx) - 0.5f;
+		m_weights[0] = { 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) };
+		m_weights[1] = { 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) };
+		m_weights[2] = { 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) };
+
+		FMatrix2x2 B(0, 0, 0, 0);
+
+		for (int gx = 0; gx < 3; ++gx) 
+		{
+			for (int gy = 0; gy < 3; ++gy) 
+			{
+				float weight = m_weights[gx].X * m_weights[gy].Y;
+
+				FIntPoint cell_x = FIntPoint(cell_idx.X + gx - 1, cell_idx.Y + gy - 1);
+				int cell_index = (int)cell_x.X * grid_res + (int)cell_x.Y;
+
+				//FVector2D cell_dist = { (cell_x.X - p->x.X) + 0.5f ,(cell_x.Y - p->x.Y) + 0.5f };
+				FVector2f dist = (cell_x.X - p->x.X + 0.5f, cell_x.Y - p->x.Y + 0.5f);
+				FVector2f weighted_velocity = m_pGrid[cell_index]->v * weight;
+
+				// APIC paper equation 10, constructing inner term for B
+				auto term = FMatrix2x2(weighted_velocity.X * dist.X, 0, 0, weighted_velocity.Y * dist.Y);
+
+				float a1, b1, c1, d1;
+				B.GetMatrix(a1, b1, c1, d1);
+
+				float a2, b2, c2, d2;
+				term.GetMatrix(a2, b2, c2, d2);
+
+				B = FMatrix2x2(a1 + a2, b1 + b2, c1 + c2, d1 + d2);
+
+				p->v += weighted_velocity;
+			}
+		}
+
+		float a, b, c, d;
+		B.GetMatrix(a, b, c, d);
+
+		p->C = FMatrix2x2(a * 4, b * 4, c * 4, d * 4);
+
+		//advect particles
+		p->x += p->v * dt;
+
+		//safety clamp to ensure particles don't exit simulation domain
+		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);
+		p->x.Y = FMath::Clamp(p->x.Y, 1, grid_res - 2);
+	}
 }
 
 void AMPM_Particle::BeginPlay()
 {
 	Super::BeginPlay();
-	//InitGrid();
+	InitGrid();
 }
 
 void AMPM_Particle::Tick(float DeltaTime)

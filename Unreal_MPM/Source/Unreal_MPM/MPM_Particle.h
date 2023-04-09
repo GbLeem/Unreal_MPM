@@ -25,7 +25,7 @@ class UNREAL_MPM_API AMPM_Particle : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMPM_Particle();
-
+	~AMPM_Particle();
 	virtual void OnConstruction(const FTransform& Transform) override;
 	void InitGrid();
 	void Simulate();
@@ -58,6 +58,9 @@ protected:
 	//UPROPERTY(Transient) //직렬화
 
 	int NumParticles;
+	int NumParticlesForInstancedStaticMesh;
+	const float m_gravity = -0.05f;
+	const float dt = 1.0f;
 
 	UPROPERTY(VisibleAnywhere)
 	int grid_res;
