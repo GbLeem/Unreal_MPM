@@ -287,10 +287,8 @@ void AMPM_Particle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	Simulate();
-	for (int i = 0; i < 10; ++i)
-	{
-		UpdateParticle();
-	}
+	UpdateParticle();
+	
 	//Simulate();
 	//UpdateParticle();
 
