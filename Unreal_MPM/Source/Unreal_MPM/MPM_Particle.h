@@ -28,8 +28,12 @@ public:
 	~AMPM_Particle();
 	virtual void OnConstruction(const FTransform& Transform) override;
 	void InitGrid();
+
+	UFUNCTION(BlueprintCallable)
 	void Simulate();
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateParticle();
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,10 +61,14 @@ protected:
 	//TArray<FTransform> Transforms;
 	//UPROPERTY(Transient) //직렬화
 
+	TArray<FVector2f> TempPositions;
+
+	//float timestep;
 	int NumParticles;
 	int NumParticlesForInstancedStaticMesh;
 	const float m_gravity = -0.05f;
 	const float dt = 1.0f;
+	const float iterations = 1.0f / dt;
 
 	UPROPERTY(VisibleAnywhere)
 	int grid_res;

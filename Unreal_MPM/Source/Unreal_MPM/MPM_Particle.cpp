@@ -2,8 +2,9 @@
 
 // Sets default values
 AMPM_Particle::AMPM_Particle()
-	:NumParticlesForInstancedStaticMesh(64)
-	,grid_res()
+	:NumParticles(0)
+	,NumParticlesForInstancedStaticMesh(64)
+	,grid_res(64)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bTickEvenWhenPaused = true;
@@ -25,22 +26,22 @@ void AMPM_Particle::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	if (InstancedParticle->GetInstanceCount() == 0)
-	{
-		TArray<FTransform> Transforms;
-	
-		Transforms.Empty(NumParticlesForInstancedStaticMesh);
-		//TransformContainer.reserve(NumParticles);
-		for (int index = 0; index < NumParticlesForInstancedStaticMesh / 8; ++index)
-		{
-			for (int index2 = 0; index2 < NumParticlesForInstancedStaticMesh / 8; ++index2)
-			{
-				Transforms.Add(FTransform(FVector(100.f * index, 100.f*index2, 0.f)));
-			}
-		}
+	//if (InstancedParticle->GetInstanceCount() == 0)
+	//{
+	//	TArray<FTransform> Transforms;
+	//
+	//	Transforms.Empty(NumParticlesForInstancedStaticMesh);
+	//	//TransformContainer.reserve(NumParticles);
+	//	for (int index = 0; index < NumParticlesForInstancedStaticMesh / 8; ++index)
+	//	{
+	//		for (int index2 = 0; index2 < NumParticlesForInstancedStaticMesh / 8; ++index2)
+	//		{
+	//			Transforms.Add(FTransform(FVector(100.f * index, 100.f*index2, 0.f)));
+	//		}
+	//	}
 
-		InstancedParticle->AddInstances(Transforms, false);
-	}
+	//	InstancedParticle->AddInstances(Transforms, false);
+	//}
 
 	//=================COLOR TEST============================
 	/*TArray<float> CustomData;
@@ -59,7 +60,7 @@ void AMPM_Particle::OnConstruction(const FTransform& Transform)
 
 void AMPM_Particle::InitGrid()
 {
-	TArray<FVector2f> TempPositions;
+	//TArray<FVector2f> TempPositions;
 	const float spacing = 1.0f;
 	const int box_x = 16;
 	const int box_y = 16;
@@ -76,7 +77,7 @@ void AMPM_Particle::InitGrid()
 	}
 	NumParticles = TempPositions.Num();
 
-	m_pParticles.Reserve(NumParticles);
+	m_pParticles.Empty(NumParticles);
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
@@ -89,17 +90,20 @@ void AMPM_Particle::InitGrid()
 		p->mass = 1.0f;
 
 		m_pParticles.Add(p);
-		//m_pParticles[i] = p; //[TODO] index error -> maybe need to reserve TArray's size
 	}
 
 	for (int i = 0; i < num_cells; ++i) 
 	{
 		Cell* TempCell = new Cell();
 		m_pGrid.Add(TempCell);
-		//m_pGrid[i] = new Cell(); [TODO] index error
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Particle Num: %d"), m_pParticles.Num());
+	UE_LOG(LogTemp, Log, TEXT("Cell Num: %d"), m_pGrid.Num());
+	for (int i = 0; i < NumParticles; ++i)
+	{
+		UE_LOG(LogTemp, Log, TEXT("%d's Particle Pos: %f %f"), i+1, m_pParticles[i]->x.X, m_pParticles[i]->x.Y);
+	}
 }
 
 void AMPM_Particle::Simulate()
@@ -116,10 +120,10 @@ void AMPM_Particle::Simulate()
 	{
 		// quadratic interpolation weights
 		FIntPoint cell_idx = static_cast<FIntPoint>(p->x.X, p->x.Y);
-		FVector2f cell_diff = (p->x - cell_idx) - 0.5f;
-		m_weights[0] = { 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) };
-		m_weights[1] = { 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) };
-		m_weights[2] = { 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) };
+		FVector2f cell_diff = (p->x - FVector2f(cell_idx)) - 0.5f;
+		m_weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) }); 
+		m_weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) });
+		m_weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) });
 
 
 		// for all surrounding 9 cells
@@ -140,7 +144,7 @@ void AMPM_Particle::Simulate()
 
 				// converting 2D index to 1D
 				int cell_index = (int)cell_x.X * grid_res + (int)cell_x.Y;
-				Cell* cell = m_pGrid[cell_index];
+				Cell* cell = m_pGrid[cell_index]; //[TODO] index error
 
 				// scatter mass to the grid
 				cell->mass += mass_contrib;
@@ -235,36 +239,70 @@ void AMPM_Particle::Simulate()
 	}
 }
 
+void AMPM_Particle::UpdateParticle()
+{
+	TArray<FTransform> Transforms;
+
+	Transforms.Empty(NumParticles);
+
+	for (int i = 0; i < NumParticles; ++i)
+	{
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0.0f));
+		Transforms.Add(tempValue);
+	}
+
+	for (int i = 0; i < NumParticles; ++i)
+	{
+		InstancedParticle->UpdateInstanceTransform(i, Transforms[i], false, false, true);
+	}
+
+	InstancedParticle->MarkRenderStateDirty(); 
+}
+
+
 void AMPM_Particle::BeginPlay()
 {
 	Super::BeginPlay();
+
 	InitGrid();
+
+	if (InstancedParticle->GetInstanceCount() == 0)
+	{
+		TArray<FTransform> Transforms;
+
+		Transforms.Empty(NumParticles);
+
+		for (int i = 0; i < NumParticles; ++i)
+		{
+			FTransform tempValue = FTransform(FVector(TempPositions[i].X * 100.f, TempPositions[i].Y * 100.f, 0.0f));
+			Transforms.Add(tempValue);
+		}
+
+		InstancedParticle->AddInstances(Transforms, false);
+	}
 }
 
 void AMPM_Particle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
-	//=========MOVING TEST===========================
-	/*TArray<FTransform> OffsetTransformContainer;
-	OffsetTransformContainer.Empty(NumParticles);
-
-	for (int index = 0; index < NumParticles / 8; ++index)
+	
+	Simulate();
+	for (int i = 0; i < 10; ++i)
 	{
-		for (int index2 = 0; index2 < NumParticles / 8; ++index2)
-		{
-			const float Offset = 100.f * sin(2 * PI * 1.f * GetWorld()->GetTimeSeconds());
-
-			FTransform OffsetTransform = FTransform(FVector(100.f * index + Offset, 100.f * index2 + Offset, 0.f));
-			OffsetTransformContainer.Add(OffsetTransform);
-		}
+		UpdateParticle();
 	}
+	//Simulate();
+	//UpdateParticle();
+
+	////[TODO] 모든 particle이 한번 수행 후 (1,1)로 가버림
+	UE_LOG(LogTemp, Log, TEXT("%d's Particle Pos: %f %f"), 0, m_pParticles[0]->x.X, m_pParticles[0]->x.Y);
+
+	/*UE_LOG(LogTemp, Log, TEXT("Particle Num: %d"), m_pParticles.Num());
+
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		InstancedParticle->UpdateInstanceTransform(i, OffsetTransformContainer[i], false, false, true);
-	}
-	InstancedParticle->MarkRenderStateDirty();*/
+		UE_LOG(LogTemp, Log, TEXT("%d's Particle Pos: %f %f"), i + 1, m_pParticles[i]->x.X, m_pParticles[i]->x.Y);
+	}*/
 }
 
 
