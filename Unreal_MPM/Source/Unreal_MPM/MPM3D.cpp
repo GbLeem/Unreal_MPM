@@ -5,9 +5,10 @@
 
 // Sets default values
 AMPM3D::AMPM3D()
+	:NumParticles(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bTickEvenWhenPaused = false;
 
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
@@ -23,9 +24,12 @@ void AMPM3D::Initialize()
 {
 	//init Grid
 	const float spacing = 0.5f;
-	const int box_x = 16;
+	/*const int box_x = 16;
 	const int box_y = 16;
-	const int box_z = 16;
+	const int box_z = 16;*/
+	const int box_x = 8;
+	const int box_y = 8;
+	const int box_z = 8;
 	const float sx = grid_res / 2.0f;
 	const float sy = grid_res / 2.0f;
 	const float sz = grid_res / 2.0f;
@@ -105,11 +109,11 @@ void AMPM3D::SimulateUpdate()
 					
 					//[TODO] Matrix and Float Multiply - Original Code : //float3 Q = math.mul(C, cell_dist);
 					C.M[3][3] = 1;
-					UE_LOG(LogTemp, Log, TEXT("matrix : %f,%f,%f,%f"), C.M[0][0], C.M[1][1], C.M[2][2], C.M[3][3]);
+					//UE_LOG(LogTemp, Log, TEXT("matrix : %f,%f,%f,%f"), C.M[0][0], C.M[1][1], C.M[2][2], C.M[3][3]);
 
 					FVector4d temp_cell_dist = FVector4f(cell_dist, 1.f);
 					FVector4 Q = C.TransformFVector4(temp_cell_dist);
-					UE_LOG(LogTemp, Log, TEXT("After Calculate: %lf, %lf, %lf, %lf"), Q.X, Q.Y, Q.Z, Q.W);
+					//UE_LOG(LogTemp, Log, TEXT("After Calculate: %lf, %lf, %lf, %lf"), Q.X, Q.Y, Q.Z, Q.W);
 
 					// MPM course, equation 172
 					float mass_contrib = weight * p->mass;
@@ -140,7 +144,7 @@ void AMPM3D::SimulateUpdate()
 			int x = gridIndex / (grid_res * grid_res);
 			int y = (gridIndex % (grid_res * grid_res)) / grid_res;
 			int z = gridIndex % gridIndex;
-			if (x<2 || x>grid_res - 3)
+			if (x < 2 || x > grid_res - 3)
 			{
 				c->Vel.X = 0;
 			}
@@ -209,6 +213,8 @@ void AMPM3D::SimulateUpdate()
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z= FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
 
+		//update index
+		particleIndex += 1;
 
 		//boundary check??
 	}
@@ -222,13 +228,13 @@ void AMPM3D::UpdateParticle()
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		FTransform tempValue = FTransform(FVector(m_pParticles[i]->Pos.X * 100.f, m_pParticles[i]->Pos.Y * 100.f, m_pParticles[i]->Pos.Z));
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->Pos.X * 100.f, m_pParticles[i]->Pos.Y * 100.f, m_pParticles[i]->Pos.Z * 100.f));
 		Transforms.Add(tempValue);
 	}
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i], false, false, true);
+		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}
 
 	InstancedStaticMeshComponent->MarkRenderStateDirty();
@@ -262,9 +268,9 @@ void AMPM3D::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Log, TEXT("Tick"));
-	SimulateUpdate();
-	UpdateParticle();
+	//UE_LOG(LogTemp, Log, TEXT("Tick"));
+	//SimulateUpdate();
+	//UpdateParticle();
 
 	/*for (int i = 0; i < iterations; ++i)
 	{

@@ -18,9 +18,12 @@ public:
 	virtual ~AMPM3D();
 
 	void Initialize();
+
+	UFUNCTION(BlueprintCallable)
 	void SimulateUpdate();
+
+	UFUNCTION(BlueprintCallable)
 	void UpdateParticle();
-	//void SimulateUpdate(const float timestep);
 
 protected:
 	// Called when the game starts or when spawned
@@ -50,12 +53,14 @@ protected:
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 	//calculating variables
-	const int grid_res = 32;
+	//const int grid_res = 32;
+	const int grid_res = 16;
 	const int num_cells = grid_res * grid_res * grid_res;
 	const int division = 128; //batch size ?
 
 	//simulation
-	const float dt = 0.2f;
+	//const float dt = 0.2f;
+	const float dt = 0.0002f;
 	const float iterations = static_cast<int>(1.f / dt);
 
 	const float gravity = -0.3f;
