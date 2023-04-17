@@ -25,6 +25,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateParticle();
 
+	UFUNCTION(BlueprintCallable)
+	void SimulatingPipeLine();
+
+	//function step
+	void ClearGrid();
+	void P2GFirst();
+	void P2GSecond();
+	void UpdateGrid();
+	void G2P();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,7 +52,7 @@ public:
 
 	struct Particle
 	{
-		FVector3f Pos;
+		FVector3f Pos; 
 		FVector3f Vel;
 		FMatrix C; //affine momentum matrix
 		float mass;
@@ -56,17 +66,19 @@ protected:
 	//const int grid_res = 32;
 	const int grid_res = 16;
 	const int num_cells = grid_res * grid_res * grid_res;
-	const int division = 128; //batch size ?
+	//const int division = 128; //batch size ?
 
 	//simulation
 	//const float dt = 0.2f;
-	const float dt = 0.0002f;
+	const float dt = 0.00002f;
 	const float iterations = static_cast<int>(1.f / dt);
 
 	const float gravity = -0.3f;
+
 	//fluid parameter
 	const float rest_density = 4.0f;
 	const float dynamic_viscosity = 0.1f;
+
 	//equation of state
 	const float eos_stiffness = 10.f;
 	const float eos_power = 4;
