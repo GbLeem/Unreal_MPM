@@ -20,20 +20,20 @@ public:
 	void Initialize();
 
 	UFUNCTION(BlueprintCallable)
-	void SimulateUpdate();
+	void SimulateUpdate(const float timestep);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateParticle();
 
 	UFUNCTION(BlueprintCallable)
-	void SimulatingPipeLine();
+	void SimulatingPipeLine(float timestep);
 
 	//function step
-	void ClearGrid();
-	void P2GFirst();
-	void P2GSecond();
-	void UpdateGrid();
-	void G2P();
+	void ClearGrid(float timestep);
+	void P2GFirst(float timestep);
+	void P2GSecond(float timestep);
+	void UpdateGrid(float timestep);
+	void G2P(float timestep);
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,6 +42,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 
 public:
 	struct Cell
@@ -69,8 +70,10 @@ protected:
 	//const int division = 128; //batch size ?
 
 	//simulation
-	//const float dt = 0.2f;
-	const float dt = 0.00002f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float dt = 0.2f;
+
+	//const float dt = 0.00002f;
 	const float iterations = static_cast<int>(1.f / dt);
 
 	const float gravity = -0.3f;
@@ -90,5 +93,9 @@ protected:
 	TArray<FVector3f> TempPositions;
 
 	int NumParticles;
-	const float timestep = 0.2f; //[TODO] what timestep can fit to tick?
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float timesteps = 0.007f; //[TODO] what timestep can fit to tick?
+
+	bool firstStep = false;
 };

@@ -45,7 +45,7 @@ public:
 	{
 		FVector2f x; // position
 		FVector2f v; // velocity
-		FMatrix2x2 C; // affine momentum matrix, unused in this file
+		FMatrix2x2 C; // affine momentum matrix
 		float mass;
 		float padding; // just for performance
 	};
