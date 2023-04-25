@@ -12,18 +12,28 @@ AMPM3D::AMPM3D()
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
-
+	InstancedStaticMeshComponent->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
 	m_weights.Empty(3);
 }
 
 AMPM3D::~AMPM3D()
 {
 	//destroy
+	for (auto& p : m_pParticles)
+	{
+		delete p;
+	}
+
+	for (auto& c : m_pGrid)
+	{
+		delete c;
+	}
 }
 
 void AMPM3D::Initialize()
 {
-	//init 
+	//init grid and fill grids with (grid_res * grid_res) cells
+
 	const float spacing = 0.5f;
 	/*const int box_x = 16;  //too slow
 	const int box_y = 16;
@@ -53,8 +63,8 @@ void AMPM3D::Initialize()
 		po2_amnt <<= 1;
 	NumParticles = po2_amnt >> 1;*/
 
+	//create particles
 	NumParticles = TempPositions.Num();
-
 	m_pParticles.Empty(NumParticles); //make particle array
 
 	for (int i = 0; i < NumParticles; ++i)
@@ -62,13 +72,13 @@ void AMPM3D::Initialize()
 		Particle* p = new Particle();
 		p->Pos = TempPositions[i];
 		p->Vel = { 0.f, 0.f, 0.f };
-		p->C = FMatrix();
+		p->C = FMatrix::Identity; //identity matrix
 		p->mass = 1.f;
 		m_pParticles.Add(p);
 	}
 
+	//fill grid
 	m_pGrid.Empty(num_cells);//make grid array
-
 	for (int i = 0; i < num_cells; ++i)
 	{
 		Cell* TempCell = new Cell();
@@ -214,8 +224,8 @@ void AMPM3D::ClearGrid(float timestep)
 	//reset grid scratch-pad
 	for (auto& c : m_pGrid)
 	{
-		c->mass = 0;
-		c->Vel = { 0.f,0.f,0.f };
+		c->mass = 0; //cell's zero mass
+		c->Vel = { 0.f,0.f,0.f }; //cell's velocity zero
 	}
 }
 
@@ -223,8 +233,10 @@ void AMPM3D::P2GFirst(float timestep)
 {
 	for (auto& p : m_pParticles)
 	{
+		//calculate weights for 3x3 neighbor cells that surrouding particle pos -> by Eulerian Interpolating Function (course - 8.1)
 		FIntVector cell_idx = static_cast<FIntVector>(p->Pos.X, p->Pos.Y, p->Pos.Z);
 		FVector3f cell_diff = { (p->Pos.X - cell_idx.X) - 0.5f ,(p->Pos.Y - cell_idx.Y) - 0.5f ,(p->Pos.Z - cell_idx.Z) - 0.5f };
+
 		m_weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2),0.5f * FMath::Pow(0.5f - cell_diff.Z, 2) });
 		m_weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2), 0.75f - FMath::Pow(cell_diff.Z, 2) });
 		m_weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Z, 2) });
@@ -236,6 +248,7 @@ void AMPM3D::P2GFirst(float timestep)
 
 		FMatrix C = p->C;
 
+		//Scatter particle's momentum -> by Eulerian interpolation function
 		for (UINT gx = 0; gx < 3; ++gx)
 		{
 			for (UINT gy = 0; gy < 3; ++gy)
@@ -348,6 +361,9 @@ void AMPM3D::P2GSecond(float timestep)
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
 					Cell* cell = m_pGrid[cell_index];
 
+					//[TODO] clear m_pGrid??
+					m_pGrid.Empty();
+
 					// fused force + momentum contribution from MLS-MPM
 					FVector3f momentum;// = math.mul(eq_16_term_0 * weight, cell_dist);
 					cell->Vel += momentum;
@@ -356,23 +372,21 @@ void AMPM3D::P2GSecond(float timestep)
 				}
 			}
 		}
-
-
 	}
 }
 
 void AMPM3D::UpdateGrid(float timestep)
 {
-	//grid velocity update
+	//calculate grid velocities
 	int gridIndex = 0;
 	for (auto& c : m_pGrid)
 	{
 		if (c->mass > 0)
 		{
+			//calculate grid velocity based on P2G's momentum (Cell->Velocity = momentum)
 			//convert momentum to velocity, apply gravity
-			c->Vel /= c->mass;
-			//c->Vel += dt * FVector3f(0, gravity, 0);
-			c->Vel += timestep * FVector3f(0, gravity, 0);
+			c->Vel /= c->mass; //make real velocity
+			c->Vel += timestep * FVector3f(0, gravity, 0); //[TODO] wht y axis gravity?
 
 			//boundary conditions
 			int x = gridIndex / (grid_res * grid_res);
@@ -407,13 +421,19 @@ void AMPM3D::G2P(float timestep)
 		//reset particle velocity
 		p->Vel = { 0.f,0.f,0.f };
 
+		//[TODO] update paticle's deformation gradient MLS_MPM eq 17
+
+		//calculate neighbouring cell weights
 		FIntVector cell_idx = static_cast<FIntVector>(p->Pos.X, p->Pos.Y, p->Pos.Z);
 		FVector3f cell_diff = { (p->Pos.X - cell_idx.X),(p->Pos.Y - cell_idx.Y),(p->Pos.Z - cell_idx.Z) };
 
+		//using interpolation function
 		m_weights[0] = { (0.5f * FMath::Pow(0.5f - cell_diff.X,2)), (0.5f * FMath::Pow(0.5f - cell_diff.Y,2)), (0.5f * FMath::Pow(0.5f - cell_diff.Z,2)) };
 		m_weights[1] = { (0.75f - FMath::Pow(cell_diff.X,2)), (0.75f - FMath::Pow(cell_diff.Y,2)), (0.75f - FMath::Pow(cell_diff.Z,2)) };
 		m_weights[2] = { (0.5f * FMath::Pow(0.5f + cell_diff.X,2)), (0.5f * FMath::Pow(0.5f + cell_diff.Y,2)), (0.5f * FMath::Pow(0.5f + cell_diff.Z,2)) };
 
+
+		//calculate new particle velocity
 		FMatrix B;
 		for (UINT gx = 0; gx < 3; ++gx)
 		{
@@ -444,7 +464,6 @@ void AMPM3D::G2P(float timestep)
 		p->C = B * 4;
 
 		//advect particles
-		//p->Pos += p->Vel * dt;
 		p->Pos += p->Vel * timestep;
 
 		//safety clamp 
