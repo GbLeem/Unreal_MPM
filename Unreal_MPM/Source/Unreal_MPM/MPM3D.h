@@ -39,9 +39,6 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-	void Update(double timestep);
-
 public:
 	struct Cell
 	{
@@ -61,6 +58,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent m_mesh;
+
 	//calculating variables
 	const int grid_res = 16;
 	const int num_cells = grid_res * grid_res * grid_res;
@@ -68,13 +68,9 @@ protected:
 	//simulation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float dt = 1.0f;
-	//float dt = 0.2f;
-
-	//const float dt = 0.00002f;
 	const float iterations = static_cast<int>(1.f / dt);
 
-	//const float gravity = -0.3f;
-	const float gravity = -0.00003f;
+	const float gravity = -0.3f;
 
 	//fluid parameter
 	const float rest_density = 4.0f;
@@ -87,14 +83,10 @@ protected:
 	//Particle and Grid
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
-	//TArray<FVector3f> m_weights;
 	TArray<FVector3f> TempPositions;
 
 	int NumParticles;
 
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	double timesteps = 1.0f; //[TODO] what timestep can fit to tick?
-
-	bool firstStep = false;
 };

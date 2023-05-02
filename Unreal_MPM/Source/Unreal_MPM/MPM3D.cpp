@@ -12,7 +12,7 @@ AMPM3D::AMPM3D()
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
-	InstancedStaticMeshComponent->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
+	//InstancedStaticMeshComponent->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
 }
 
 AMPM3D::~AMPM3D()
@@ -32,7 +32,7 @@ AMPM3D::~AMPM3D()
 void AMPM3D::Initialize()
 {
 	//init grid and fill grids with (grid_res * grid_res) cells
-	const float spacing = 1.0f;
+	const float spacing = 1.f;
 	const int box_x = 8;
 	const int box_y = 8;
 	const int box_z = 8;
@@ -108,7 +108,6 @@ void AMPM3D::ClearGrid()
 		c->mass = 0; //cell's zero mass
 		c->Vel = { 0.f,0.f,0.f }; //cell's velocity zero
 	}
-	//UE_LOG(LogTemp, Log, TEXT("grid mass and vel of x: %f, %f"), m_pGrid[10]->mass, m_pGrid[10]->Vel.X);
 }
 
 void AMPM3D::P2GFirst()
@@ -125,6 +124,8 @@ void AMPM3D::P2GFirst()
 		m_weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Z, 2) });
 
 		FMatrix C = p->C;
+		
+		//UE_LOG(LogTemp, Log, TEXT("matrix C's value: %f, %f,%f,%f"), C.M[0][0], C.M[1][1], C.M[2][2], C.M[3][3]);
 
 		//Scatter particle's momentum -> by Eulerian interpolation function
 		for (UINT gx = 0; gx < 3; ++gx)
@@ -139,9 +140,15 @@ void AMPM3D::P2GFirst()
 					FVector3f cell_dist = { (cell_x.X - p->Pos.X) + 0.5f, (cell_x.Y - p->Pos.Y) + 0.5f, (cell_x.Z - p->Pos.Z) + 0.5f };
 
 					//[TODO] Matrix and Float Multiply - Original Code : //float3 Q = math.mul(C, cell_dist);
-					C.M[3][3] = 1;
-					FVector4d temp_cell_dist = FVector4f(cell_dist, 1.f);
-					FVector4 Q = C.TransformFVector4(temp_cell_dist);
+					//C is Identity matrix
+
+					//[FIX] 5/2
+					//C.M[3][3] = 1;
+					//FVector4d temp_cell_dist = FVector4f(cell_dist, 1.f);
+					//FVector4 Q = C.TransformFVector4(temp_cell_dist);
+
+					//[FIX] - new version
+					FVector3d Q = { C.M[0][0] * cell_dist.X, C.M[1][1] * cell_dist.Y, C.M[2][2] * cell_dist.Z };
 					
 					float mass_contrib = weight * p->mass;
 
@@ -269,7 +276,7 @@ void AMPM3D::UpdateGrid(double timestep)
 			//calculate grid velocity based on P2G's momentum (Cell->Velocity = momentum)
 			//convert momentum to velocity, apply gravity
 
-			c->Vel /= c->mass; //make real velocity
+			c->Vel /= c->mass; //make real velocity -> mass*velocity = momentum
 			c->Vel += timestep * FVector3f(0, gravity, 0); //[TODO] why y axis gravity?
 
 			//boundary conditions
@@ -290,6 +297,7 @@ void AMPM3D::UpdateGrid(double timestep)
 			}
 		}
 		gridIndex += 1;
+		//UE_LOG(LogTemp, Log, TEXT("gridIndex: %d"), gridIndex);
 	}
 }
 
@@ -355,6 +363,11 @@ void AMPM3D::G2P(double timestep)
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z = FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
 
+		//add force
+		{
+			FVector3f force = { 0.2f, 0.4f, 0.4f };
+			p->Vel += force;
+		}
 
 		//boundaries
 		FVector3f x_n = p->Pos + p->Vel;
@@ -410,42 +423,7 @@ void AMPM3D::Tick(float DeltaTime)
 
 	SimulatingPipeLine(timesteps);
 	UpdateParticle();
-	//Update(timesteps);
-	//UE_LOG(LogTemp, Log, TEXT("particle: %d"), NumParticles);
 }
 
-
-void AMPM3D::Update(double timestep)
-{
-	//[ORIGINAL]
-	//for (int i = 0; i < NumParticles; ++i)
-	//{
-	//	//TArray<Particle*> TempParticles;
-	//	//TempParticles = m_pParticles;
-	//	InstancedStaticMeshComponent->UpdateInstanceTransform(
-	//			i,
-	//			FTransform(FRotator::ZeroRotator,
-	//			FVector(m_pParticles[i]->Pos.X * 100.f, m_pParticles[i]->Pos.Y * 100.f, m_pParticles[i]->Pos.Z * 100.f),
-	//			FVector(1.0f, 1.0f, 1.0f)));
-	//}
-	//InstancedStaticMeshComponent->MarkRenderStateDirty();
-
-	//[TEST]
-	TArray<FTransform> OffsetTransformContainer;
-	OffsetTransformContainer.Empty(NumParticles);
-
-	
-	for (int i = 0; i < NumParticles; ++i)
-	{
-		const float Offset = cos(2 * PI * 1.f * GetWorld()->GetTimeSeconds());
-		FTransform tempValue = FTransform(FVector(m_pParticles[i]->Pos.X * 100.f + Offset, m_pParticles[i]->Pos.Y * 100.f + Offset, m_pParticles[i]->Pos.Z * 100.f + Offset));
-		OffsetTransformContainer.Add(tempValue);
-
-		/*FTransform OffsetTransform = FTransform(FVector(100.f * i + Offset, 100.f * i + Offset, 100.f * i + Offset * 100.f));
-		OffsetTransformContainer.Add(OffsetTransform);*/
-		InstancedStaticMeshComponent->UpdateInstanceTransform(i, OffsetTransformContainer[i], false, false, true);
-	}
-	InstancedStaticMeshComponent->MarkRenderStateDirty();
-}
 
 
