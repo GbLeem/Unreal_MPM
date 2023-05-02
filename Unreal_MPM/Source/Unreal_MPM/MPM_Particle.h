@@ -67,7 +67,7 @@ protected:
 	int NumParticles;
 	int NumParticlesForInstancedStaticMesh;
 	const float m_gravity = -0.05f;
-	const float dt = 0.01f;
+	const float dt = 0.007f;
 	const float iterations = 1.0f / dt;
 
 	UPROPERTY(VisibleAnywhere)

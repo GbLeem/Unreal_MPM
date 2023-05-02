@@ -17,32 +17,30 @@ public:
 	AMPM3D();
 	virtual ~AMPM3D();
 
-	void Initialize();
-
 	UFUNCTION(BlueprintCallable)
-	void SimulateUpdate(const float timestep);
+	void Initialize();
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateParticle();
 
 	UFUNCTION(BlueprintCallable)
-	void SimulatingPipeLine(float timestep);
+	void SimulatingPipeLine(double timestep);
 
 	//function step
-	void ClearGrid(float timestep);
-	void P2GFirst(float timestep);
-	void P2GSecond(float timestep);
-	void UpdateGrid(float timestep);
-	void G2P(float timestep);
+	void ClearGrid();
+	void P2GFirst();
+	void P2GSecond(double timestep);
+	void UpdateGrid(double timestep);
+	void G2P(double timestep);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void Update(double timestep);
 
 public:
 	struct Cell
@@ -64,19 +62,19 @@ protected:
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 	//calculating variables
-	//const int grid_res = 32;
 	const int grid_res = 16;
 	const int num_cells = grid_res * grid_res * grid_res;
-	//const int division = 128; //batch size ?
 
 	//simulation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float dt = 0.2f;
+	float dt = 1.0f;
+	//float dt = 0.2f;
 
 	//const float dt = 0.00002f;
 	const float iterations = static_cast<int>(1.f / dt);
 
-	const float gravity = -0.3f;
+	//const float gravity = -0.3f;
+	const float gravity = -0.00003f;
 
 	//fluid parameter
 	const float rest_density = 4.0f;
@@ -89,13 +87,14 @@ protected:
 	//Particle and Grid
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
-	TArray<FVector3f> m_weights;
+	//TArray<FVector3f> m_weights;
 	TArray<FVector3f> TempPositions;
 
 	int NumParticles;
 
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float timesteps = 0.007f; //[TODO] what timestep can fit to tick?
+	double timesteps = 1.0f; //[TODO] what timestep can fit to tick?
 
 	bool firstStep = false;
 };
