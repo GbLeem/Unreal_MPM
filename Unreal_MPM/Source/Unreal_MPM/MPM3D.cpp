@@ -12,7 +12,6 @@ AMPM3D::AMPM3D()
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
-	//InstancedStaticMeshComponent->SetWorldScale3D(FVector(0.5, 0.5, 0.5));
 }
 
 AMPM3D::~AMPM3D()
@@ -88,7 +87,6 @@ void AMPM3D::UpdateParticle()
 		Transforms.Add(tempValue);
 		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}
-
 	InstancedStaticMeshComponent->MarkRenderStateDirty();
 }
 
@@ -149,7 +147,6 @@ void AMPM3D::P2GFirst()
 
 					//[FIX] - new version
 					FVector3d Q = { C.M[0][0] * cell_dist.X, C.M[1][1] * cell_dist.Y, C.M[2][2] * cell_dist.Z };
-					
 					float mass_contrib = weight * p->mass;
 
 					//convert index to 1d
@@ -172,8 +169,8 @@ void AMPM3D::P2GFirst()
 			}
 		}
 	}
+	firstRound = false;
 	//UE_LOG(LogTemp, Log, TEXT("grid mass and vel of x: %f, %f"), m_pGrid[10]->mass, m_pGrid[10]->Vel.X);
-
 }
 
 void AMPM3D::P2GSecond(double timestep)
@@ -192,7 +189,7 @@ void AMPM3D::P2GSecond(double timestep)
 		//estimating particle volume by summing up neighbourhood's weighted mass contribution
 		//MPM course eq 152
 		float density = 0.0f;
-		int gx, gy, gz;
+		int gx, gy, gz = 0;
 		for (gx = 0; gx < 3; ++gx)
 		{
 			for (gy = 0; gy < 3; ++gy)
@@ -206,8 +203,10 @@ void AMPM3D::P2GSecond(double timestep)
 			}
 		}
 		float volume;
-		if(density!=0.f)
+		if (density != 0.f)
 			volume = p->mass / density;
+		else
+			volume = p->mass;
 
 		// end goal, constitutive equation for isotropic fluid
 		// stress = -pressure*I + viscosity *(velocity_gradient + velocity_gradient_transposed)
@@ -228,14 +227,14 @@ void AMPM3D::P2GSecond(double timestep)
 		//column 3, 2, 1
 		//1행 3열
 		//[row][col]
-		float trace = strain.M[0][2] + strain.M[1][1] + strain.M[2][0];
-		strain.M[0][2] = strain.M[1][1] = strain.M[0][2] = trace;
+		float trace = strain.M[0][0] + strain.M[1][1] + strain.M[2][2];
+		strain.M[2][2] = strain.M[1][1] = strain.M[0][0] = trace;
 
 		FMatrix viscosity_term = strain.ApplyScale(dynamic_viscosity);
 		stress += viscosity_term;
 
 		//-volume * 4 * stress * dt;
-		auto eq_16_term_0 = stress.ApplyScale(-volume * 4 * dt);
+		auto eq_16_term_0 = stress.ApplyScale(-volume * 4) * timestep;
 
 		for (gx = 0; gx < 3; ++gx)
 		{
@@ -249,16 +248,28 @@ void AMPM3D::P2GSecond(double timestep)
 					FVector3f cell_dist = FVector3f{ (cell_x.X - p->Pos.X) + 0.5f,(cell_x.Y - p->Pos.Y) + 0.5f,(cell_x.Z - p->Pos.Z) + 0.5f };
 
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
-					Cell* cell = m_pGrid[cell_index];
 
-					//[TODO] clear m_pGrid??
-					m_pGrid.Empty();
+					for (auto& c : m_pGrid)
+					{
+						FVector3f momentum = FVector3f{ static_cast<float>(eq_16_term_0.ApplyScale(weight).M[0][0]) * cell_dist.X,
+												 static_cast<float>(eq_16_term_0.ApplyScale(weight).M[1][1]) * cell_dist.Y,
+												 static_cast<float>(eq_16_term_0.ApplyScale(weight).M[2][2]) * cell_dist.Z };
+						c->Vel += momentum;
+					}
 
-					// fused force + momentum contribution from MLS-MPM
-					FVector3f momentum;// = math.mul(eq_16_term_0 * weight, cell_dist);
-					cell->Vel += momentum;
+					//Cell* cell = m_pGrid[cell_index];
 
-					m_pGrid[cell_index] = cell;
+					////[TODO] clear m_pGrid??
+					//m_pGrid.Empty();
+
+					//// fused force + momentum contribution from MLS-MPM
+					////[TODO] it is not diagonal matrix maybe...
+					//FVector3f momentum = FVector3f{ static_cast<float>(eq_16_term_0.ApplyScale(weight).M[0][0]) * cell_dist.X,
+					//						 static_cast<float>(eq_16_term_0.ApplyScale(weight).M[1][1]) * cell_dist.Y,
+					//						 static_cast<float>(eq_16_term_0.ApplyScale(weight).M[2][2]) * cell_dist.Z };
+					//cell->Vel += momentum;
+
+					//m_pGrid[cell_index] = cell;
 				}
 			}
 		}
@@ -269,8 +280,9 @@ void AMPM3D::UpdateGrid(double timestep)
 {
 	//calculate grid velocities
 	int gridIndex = 0;
+
 	for (auto& c : m_pGrid)
-	{
+	{		
 		if (c->mass > 0)
 		{
 			//calculate grid velocity based on P2G's momentum (Cell->Velocity = momentum)
@@ -283,6 +295,7 @@ void AMPM3D::UpdateGrid(double timestep)
 			int x = gridIndex / (grid_res * grid_res);
 			int y = (gridIndex % (grid_res * grid_res)) / grid_res;
 			int z = gridIndex % grid_res;
+
 			if (x < 2 || x > grid_res - 3)
 			{
 				c->Vel.X = 0;
@@ -317,7 +330,7 @@ void AMPM3D::G2P(double timestep)
 		//using interpolation function
 		TArray<FVector3f> m_weights;
 		m_weights.Empty(3);
-		m_weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2),0.5f * FMath::Pow(0.5f - cell_diff.Z, 2) });
+		m_weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Z, 2) });
 		m_weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2), 0.75f - FMath::Pow(cell_diff.Z, 2) });
 		m_weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Z, 2) });
 
@@ -337,7 +350,7 @@ void AMPM3D::G2P(double timestep)
 					FIntVector cell_x = FIntVector(cell_idx.X + gx - 1, cell_idx.Y + gy - 1, cell_idx.Z + gz - 1);
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
 
-					FVector3f dist = { (cell_x.X - p->Pos.X) + 0.5f,(cell_x.Y - p->Pos.Y) + 0.5f,(cell_x.Z - p->Pos.Z) + 0.5f };
+					FVector3f dist = { (cell_x.X - p->Pos.X) + 0.5f, (cell_x.Y - p->Pos.Y) + 0.5f, (cell_x.Z - p->Pos.Z) + 0.5f };
 					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight;
 					
 					auto term = FMatrix::Identity;
@@ -352,7 +365,6 @@ void AMPM3D::G2P(double timestep)
 				}
 			}
 		}
-
 		p->C = B * 4;
 
 		//advect particles
@@ -365,14 +377,16 @@ void AMPM3D::G2P(double timestep)
 
 		//add force
 		{
-			FVector3f force = { 0.2f, 0.4f, 0.4f };
+			FVector3f force = { 0.2f, 0.2f, 0.4f };
 			p->Vel += force;
 		}
 
 		//boundaries
 		FVector3f x_n = p->Pos + p->Vel;
-		const float wall_min = 3;
-		float wall_max = (float)grid_res - 4;
+		/*const float wall_min = 3;
+		float wall_max = (float)grid_res - 4;*/
+		const float wall_min = 1;
+		float wall_max = (float)grid_res - 2;
 
 		if (x_n.X < wall_min)
 			p->Vel.X += wall_min - x_n.X;
@@ -390,7 +404,6 @@ void AMPM3D::G2P(double timestep)
 			p->Vel.Z += wall_max - x_n.Z;
 	}
 }
-
 
 
 void AMPM3D::BeginPlay()
@@ -414,7 +427,6 @@ void AMPM3D::BeginPlay()
 	}
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[0]->Pos.X, m_pParticles[0]->Pos.Y);
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[NumParticles-1]->Pos.X, m_pParticles[NumParticles-1]->Pos.Y);
-
 }
 
 void AMPM3D::Tick(float DeltaTime)
