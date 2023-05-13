@@ -7,14 +7,22 @@ AMPM3D::AMPM3D()
 	PrimaryActorTick.bTickEvenWhenPaused = true;
 
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
+	InstancedInteractionMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InteractiveInstancedMesh"));
+
 	SetRootComponent(InstancedStaticMeshComponent);
 	
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
 
+	//Interactive test 2: instanced mesh
+	InstancedInteractionMesh->SetMobility(EComponentMobility::Static);
+	InstancedInteractionMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	InstancedInteractionMesh->SetGenerateOverlapEvents(false);
+
+
+	//Interactive test 1: static mesh
 	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InteractionBall"));
-	//AInteractionBall::m_pMovingStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("movingBall"));
 }
 
 AMPM3D::~AMPM3D()
@@ -351,9 +359,9 @@ void AMPM3D::G2P(double timestep)
 
 		//calculate new particle velocity
 		FMatrix B;// FMatrix::Identity;
-		B.M[0][0] = 0;
+		/*B.M[0][0] = 0;
 		B.M[1][1] = 0;
-		B.M[2][2] = 0;
+		B.M[2][2] = 0;*/
 		for (UINT gx = 0; gx < 3; ++gx)
 		{
 			for (UINT gy = 0; gy < 3; ++gy)
@@ -390,33 +398,35 @@ void AMPM3D::G2P(double timestep)
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z = FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
 
-		//add force for test 
-		/*{
-			FVector3f force = { 0.0f, 0.01f, 0.0f };
-			p->Vel += force;
-		}*/
 
 		//interaction with static mesh
+		/*FVector dist_sphere = FVector{ p->Pos.X - m_pMesh->GetComponentTransform().GetLocation().X,
+				p->Pos.Y - m_pMesh->GetComponentTransform().GetLocation().Y,
+				p->Pos.Z - m_pMesh->GetComponentTransform().GetLocation().Z};*/
+
+		FVector dist_sphere = FVector{ p->Pos.X * 100.f - m_pMesh->GetComponentLocation().X,
+				p->Pos.Y * 100.f - m_pMesh->GetComponentLocation().Y,
+				p->Pos.Z * 100.f - m_pMesh->GetComponentLocation().Z };
+
+		/*UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X,
+			m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Z);
+		UE_LOG(LogTemp, Log, TEXT("================="));
+		UE_LOG(LogTemp, Log, TEXT("particle location: %f / %f / %f"), p->Pos.X * 100.f, p->Pos.Y * 100.f, p->Pos.Z * 100.f);*/
+
+		auto dotproduct_res = sqrt(dist_sphere.X * dist_sphere.X + dist_sphere.Y * dist_sphere.Y + dist_sphere.Z * dist_sphere.Z);
+		UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
+
+		if (dotproduct_res < 2200)
 		{
-			FVector dist_sphere = FVector{ p->Pos.X - m_pMesh->GetComponentLocation().X,
-				p->Pos.Y - m_pMesh->GetComponentLocation().Y,
-				p->Pos.Z - m_pMesh->GetComponentLocation().Z };
+			auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
+			//UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
 
-			auto dotproduct_res = sqrt(dist_sphere.X * dist_sphere.X + dist_sphere.Y * dist_sphere.Y + dist_sphere.Z * dist_sphere.Z);
-			//UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
-
-			if (dotproduct_res < 1400)
-			{
-				auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
-				UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
-
-				p->Vel.X += force.X;
-				p->Vel.Y += force.Y;
-				p->Vel.Z += force.Z;
-			}
+			p->Vel.X += force.X;
+			p->Vel.Y += force.Y;
+			p->Vel.Z += force.Z;
 		}
-
-
+			
+		
 		//boundaries
 		FVector3f x_n = p->Pos + p->Vel;
 		/*const float wall_min = 3;
@@ -438,6 +448,9 @@ void AMPM3D::G2P(double timestep)
 			p->Vel.Z += wall_min - x_n.Z;
 		if (x_n.Z > wall_max)
 			p->Vel.Z += wall_max - x_n.Z;
+
+		//first step end
+		//UE_LOG(LogTemp, Log, TEXT("==particle=="));
 	}
 }
 
@@ -446,7 +459,7 @@ void AMPM3D::BeginPlay()
 {
 	Super::BeginPlay();
 
-	m_pMesh->SetWorldLocation(FVector(-260, -1280, 300));
+	m_pMesh->SetWorldLocation(FVector(-420, -1260, 200));
 
 	Initialize();
 
@@ -463,6 +476,10 @@ void AMPM3D::BeginPlay()
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
 	}
+	
+	FTransform InstancedInteractiveMeshTransform = FTransform(FVector(-420, -1260, 200));
+	InstancedInteractionMesh->AddInstance(InstancedInteractiveMeshTransform, false);
+
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[0]->Pos.X, m_pParticles[0]->Pos.Y);
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[NumParticles-1]->Pos.X, m_pParticles[NumParticles-1]->Pos.Y);
 }
@@ -484,6 +501,3 @@ void AMPM3D::MoveInteractionBall()
 	location.X += 10;
 	m_pMesh->SetWorldLocation(location);
 }
-
-
-

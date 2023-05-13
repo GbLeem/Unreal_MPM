@@ -66,6 +66,9 @@ protected:
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* InstancedInteractionMesh;
+
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* m_pMesh;
 
 	//calculating variables
@@ -78,8 +81,8 @@ protected:
 	float dt = 1.0f;
 	const float iterations = static_cast<int>(1.f / dt);
 
-	//const float gravity = -0.03f;
-	const float gravity = -0.1f;
+	const float gravity = -0.03f;
+	//const float gravity = -0.1f;
 
 	//fluid parameter
 	const float rest_density = 4.0f;
