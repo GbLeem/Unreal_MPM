@@ -6,7 +6,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InteractionBall.h"
+
+
 #include "MPM3D.generated.h"
+
 
 UCLASS()
 class UNREAL_MPM_API AMPM3D : public AActor
@@ -40,6 +44,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	void MoveInteractionBall();
+
+public:
 	struct Cell
 	{
 		FVector3f Vel;
@@ -58,11 +65,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
-	/*UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* m_pMesh;*/
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* m_pMesh;
 
 	//calculating variables
 	const int grid_res = 16;
+	//const int grid_res = 32;
 	const int num_cells = grid_res * grid_res * grid_res;
 
 	//simulation
@@ -70,7 +78,8 @@ protected:
 	float dt = 1.0f;
 	const float iterations = static_cast<int>(1.f / dt);
 
-	const float gravity = -0.03f;
+	//const float gravity = -0.03f;
+	const float gravity = -0.1f;
 
 	//fluid parameter
 	const float rest_density = 4.0f;
@@ -91,4 +100,10 @@ protected:
 	double timesteps = 1.0f; //timestep fit to tick?
 
 	bool firstRound = true;
+
+
+	
+	//for interaction
+	//FVector3f BallPosition = AInteractionBall::BallTransform;
+	//float InteractionDistance = 100.f;
 };

@@ -12,6 +12,9 @@ AMPM3D::AMPM3D()
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
+
+	m_pMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InteractionBall"));
+	//AInteractionBall::m_pMovingStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("movingBall"));
 }
 
 AMPM3D::~AMPM3D()
@@ -31,7 +34,10 @@ AMPM3D::~AMPM3D()
 void AMPM3D::Initialize()
 {
 	//init grid and fill grids with (grid_res * grid_res) cells
-	const float spacing = 1.f;
+	const float spacing = 1.0f;
+	/*const int box_x = 16;
+	const int box_y = 16;
+	const int box_z = 16;*/
 	const int box_x = 8;
 	const int box_y = 8;
 	const int box_z = 8;
@@ -39,7 +45,7 @@ void AMPM3D::Initialize()
 	const float sy = grid_res / 2.0f;
 	const float sz = grid_res / 2.0f;
 
-	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing)
+	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing) //4~12 
 	{
 		for (float j = sy - box_y / 2; j < sy + box_y / 2; j += spacing)
 		{
@@ -50,6 +56,12 @@ void AMPM3D::Initialize()
 			}
 		}
 	}
+
+	//round number of particles
+	int po2_amnt = 1;
+	while (po2_amnt <= TempPositions.Num())
+		po2_amnt <<= 1;
+	NumParticles = po2_amnt >> 1;
 
 	//create particles
 	NumParticles = TempPositions.Num();
@@ -73,6 +85,8 @@ void AMPM3D::Initialize()
 		TempCell->Vel = { 0.f, 0.f, 0.f };
 		m_pGrid.Add(TempCell);
 	}
+
+
 }
 
 void AMPM3D::UpdateParticle()
@@ -94,6 +108,7 @@ void AMPM3D::SimulatingPipeLine(double timestep)
 {
 	ClearGrid();
 	P2GFirst();
+	//P2GSecond(timestep);
 	UpdateGrid(timestep);
 	G2P(timestep);
 }
@@ -351,7 +366,7 @@ void AMPM3D::G2P(double timestep)
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
 
 					FVector3f dist = { (cell_x.X - p->Pos.X) + 0.5f, (cell_x.Y - p->Pos.Y) + 0.5f, (cell_x.Z - p->Pos.Z) + 0.5f };
-					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight;
+					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight; //index
 					
 					auto term = FMatrix::Identity;
 					term.M[0][0] = weighted_velocity.X * dist.X;
@@ -375,11 +390,32 @@ void AMPM3D::G2P(double timestep)
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z = FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
 
-		//add force
-		{
-			FVector3f force = { 0.2f, 0.2f, 0.4f };
+		//add force for test 
+		/*{
+			FVector3f force = { 0.0f, 0.01f, 0.0f };
 			p->Vel += force;
+		}*/
+
+		//interaction with static mesh
+		{
+			FVector dist_sphere = FVector{ p->Pos.X - m_pMesh->GetComponentLocation().X,
+				p->Pos.Y - m_pMesh->GetComponentLocation().Y,
+				p->Pos.Z - m_pMesh->GetComponentLocation().Z };
+
+			auto dotproduct_res = sqrt(dist_sphere.X * dist_sphere.X + dist_sphere.Y * dist_sphere.Y + dist_sphere.Z * dist_sphere.Z);
+			//UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
+
+			if (dotproduct_res < 1400)
+			{
+				auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
+				UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
+
+				p->Vel.X += force.X;
+				p->Vel.Y += force.Y;
+				p->Vel.Z += force.Z;
+			}
 		}
+
 
 		//boundaries
 		FVector3f x_n = p->Pos + p->Vel;
@@ -410,6 +446,8 @@ void AMPM3D::BeginPlay()
 {
 	Super::BeginPlay();
 
+	m_pMesh->SetWorldLocation(FVector(-260, -1280, 300));
+
 	Initialize();
 
 	if (InstancedStaticMeshComponent->GetInstanceCount() == 0)
@@ -435,6 +473,16 @@ void AMPM3D::Tick(float DeltaTime)
 
 	SimulatingPipeLine(timesteps);
 	UpdateParticle();
+
+	MoveInteractionBall();
+	//UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X, m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Y);
+}
+
+void AMPM3D::MoveInteractionBall()
+{
+	FVector location = m_pMesh->GetComponentLocation();
+	location.X += 10;
+	m_pMesh->SetWorldLocation(location);
 }
 
 
