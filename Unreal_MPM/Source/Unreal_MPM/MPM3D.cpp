@@ -93,8 +93,6 @@ void AMPM3D::Initialize()
 		TempCell->Vel = { 0.f, 0.f, 0.f };
 		m_pGrid.Add(TempCell);
 	}
-
-
 }
 
 void AMPM3D::UpdateParticle()
@@ -332,7 +330,7 @@ void AMPM3D::UpdateGrid(double timestep)
 				c->Vel.Z = 0;
 			}
 		}
-		gridIndex += 1;
+		++gridIndex;
 		//UE_LOG(LogTemp, Log, TEXT("gridIndex: %d"), gridIndex);
 	}
 }
@@ -374,12 +372,21 @@ void AMPM3D::G2P(double timestep)
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
 
 					FVector3f dist = { (cell_x.X - p->Pos.X) + 0.5f, (cell_x.Y - p->Pos.Y) + 0.5f, (cell_x.Z - p->Pos.Z) + 0.5f };
-					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight; //index
+					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight;
 					
 					auto term = FMatrix::Identity;
 					term.M[0][0] = weighted_velocity.X * dist.X;
+					term.M[1][0] = weighted_velocity.X * dist.X;
+					term.M[2][0] = weighted_velocity.X * dist.X;
+
+					term.M[0][1] = weighted_velocity.Y * dist.Y;
 					term.M[1][1] = weighted_velocity.Y * dist.Y;
+					term.M[2][1] = weighted_velocity.Y * dist.Y;
+
+					term.M[0][2] = weighted_velocity.Z * dist.Z;
+					term.M[1][2] = weighted_velocity.Z * dist.Z;
 					term.M[2][2] = weighted_velocity.Z * dist.Z;
+
 
 					B += term;
 					//UE_LOG(LogTemp, Log, TEXT("(0,0) : %f (1,1) : %f"), B.M[0][0], B.M[1][1]);
@@ -398,12 +405,13 @@ void AMPM3D::G2P(double timestep)
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z = FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
 
+		//force test
+		{
+			FVector3f force = { 100.f, 0.0f, 0.f };
+			p->Vel += force;
+		}
 
 		//interaction with static mesh
-		/*FVector dist_sphere = FVector{ p->Pos.X - m_pMesh->GetComponentTransform().GetLocation().X,
-				p->Pos.Y - m_pMesh->GetComponentTransform().GetLocation().Y,
-				p->Pos.Z - m_pMesh->GetComponentTransform().GetLocation().Z};*/
-
 		FVector dist_sphere = FVector{ p->Pos.X * 100.f - m_pMesh->GetComponentLocation().X,
 				p->Pos.Y * 100.f - m_pMesh->GetComponentLocation().Y,
 				p->Pos.Z * 100.f - m_pMesh->GetComponentLocation().Z };
@@ -414,9 +422,10 @@ void AMPM3D::G2P(double timestep)
 		UE_LOG(LogTemp, Log, TEXT("particle location: %f / %f / %f"), p->Pos.X * 100.f, p->Pos.Y * 100.f, p->Pos.Z * 100.f);*/
 
 		auto dotproduct_res = sqrt(dist_sphere.X * dist_sphere.X + dist_sphere.Y * dist_sphere.Y + dist_sphere.Z * dist_sphere.Z);
-		UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
+		//UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
 
-		if (dotproduct_res < 2200)
+		//if (dotproduct_res < 2200) //[TEST]do not interaction
+		if (dotproduct_res < 20)
 		{
 			auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
 			//UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
@@ -432,7 +441,7 @@ void AMPM3D::G2P(double timestep)
 		/*const float wall_min = 3;
 		float wall_max = (float)grid_res - 4;*/
 		const float wall_min = 1;
-		float wall_max = (float)grid_res - 2;
+		float wall_max = (float)(grid_res - 1) - wall_min;
 
 		if (x_n.X < wall_min)
 			p->Vel.X += wall_min - x_n.X;
@@ -459,6 +468,7 @@ void AMPM3D::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//static mesh
 	m_pMesh->SetWorldLocation(FVector(-420, -1260, 200));
 
 	Initialize();
@@ -477,6 +487,7 @@ void AMPM3D::BeginPlay()
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
 	}
 	
+	//instanced mesh
 	FTransform InstancedInteractiveMeshTransform = FTransform(FVector(-420, -1260, 200));
 	InstancedInteractionMesh->AddInstance(InstancedInteractiveMeshTransform, false);
 
@@ -491,7 +502,7 @@ void AMPM3D::Tick(float DeltaTime)
 	SimulatingPipeLine(timesteps);
 	UpdateParticle();
 
-	MoveInteractionBall();
+	//MoveInteractionBall();
 	//UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X, m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Y);
 }
 
