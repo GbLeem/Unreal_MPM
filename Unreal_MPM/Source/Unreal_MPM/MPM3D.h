@@ -34,8 +34,11 @@ public:
 	void ClearGrid();
 	void P2GFirst();
 	void P2GSecond(double timestep);
+	void P2GScatterMLS();
+	void P2GMLS(double timestep);
 	void UpdateGrid(double timestep);
 	void G2P(double timestep);
+	void G2PMLS(double timestep);
 
 protected:
 	virtual void BeginPlay() override;
@@ -44,8 +47,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	//for interaction with static mesh
 	void MoveInteractionBall();
 
+	//for check particle positions
+	void CheckParticlePos();
+
+	//for FMatrix multiply with Vector3f
+	FVector3f MultiplyMatrixAndVector(FMatrix f, FVector3f v);
 public:
 	struct Cell
 	{
@@ -59,9 +68,10 @@ public:
 		FVector3f Vel;
 		FMatrix C; //affine momentum matrix
 		float mass;
+		float volume_0;
 	};
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
@@ -88,6 +98,10 @@ protected:
 	const float rest_density = 4.0f;
 	const float dynamic_viscosity = 0.1f;
 
+	//lame parameters for stress-strain relationship
+	const float elastic_lambda = 10.f;
+	const float elastic_mu = 20.f;
+
 	//equation of state
 	const float eos_stiffness = 10.f;
 	const float eos_power = 4;
@@ -96,6 +110,7 @@ protected:
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
 	TArray<FVector3f> TempPositions;
+	TArray<FMatrix> m_DeformationGradient;
 
 	int NumParticles;
 
