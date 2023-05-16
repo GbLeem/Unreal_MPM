@@ -111,7 +111,7 @@ public:
 	TArray<Cell*> m_pGrid;
 	TArray<FVector3f> TempPositions;
 	TArray<FMatrix> m_DeformationGradient;
-
+ 
 	int NumParticles;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

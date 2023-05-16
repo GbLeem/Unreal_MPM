@@ -98,7 +98,8 @@ void AMPM3D::Initialize()
 		m_pGrid.Add(TempCell);
 	}
 
-	P2GScatterMLS();
+	//[TEST] Neo-Hookean
+	//P2GScatterMLS();
 }
 
 void AMPM3D::UpdateParticle()
@@ -302,11 +303,11 @@ void AMPM3D::P2GSecond(double timestep)
 
 void AMPM3D::P2GScatterMLS()
 {
+	TArray<FVector3f> m_weights;
 	for (auto& p : m_pParticles)
 	{
 		FIntVector cell_idx = static_cast<FIntVector>((int)p->Pos.X, (int)p->Pos.Y, (int)p->Pos.Z);
 		FVector3f cell_diff = FVector3f{ (p->Pos.X - cell_idx.X) - 0.5f ,(p->Pos.Y - cell_idx.Y) - 0.5f ,(p->Pos.Z - cell_idx.Z) - 0.5f };
-		TArray<FVector3f> m_weights;
 
 		m_weights.Empty(3);
 		m_weights.Add(FVector3f{ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2),0.5f * FMath::Pow(0.5f - cell_diff.Z, 2) });
@@ -508,7 +509,6 @@ void AMPM3D::G2P(double timestep)
 					term.M[1][2] = weighted_velocity.Z * dist.Z;
 					term.M[2][2] = weighted_velocity.Z * dist.Z;
 
-
 					B += term;
 					//UE_LOG(LogTemp, Log, TEXT("(0,0) : %f (1,1) : %f"), B.M[0][0], B.M[1][1]);
 
@@ -528,7 +528,7 @@ void AMPM3D::G2P(double timestep)
 
 		//force test [TEST] 5/16
 		/*{
-			FVector3f force = { 100.f, 0.0f, 0.f };
+			FVector3f force = { 0.5f, 0.0f, 0.f };
 			p->Vel += force;
 		}*/
 
@@ -549,15 +549,15 @@ void AMPM3D::G2P(double timestep)
 		//if (dotproduct_res < 20) //[TEST]do not interaction
 		
 		//[TEST] 5/16 delete for MLS test
-		if (dotproduct_res < 2200) 
-		{
-			auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
-			//UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
+		//if (dotproduct_res < 2200) 
+		//{
+		//	auto force = dist_sphere.GetSafeNormal() * 1.f / 10.f;
+		//	//UE_LOG(LogTemp, Log, TEXT("force: %f / %f / %f"), force.X, force.Y, force.Z);
 
-			p->Vel.X += force.X;
-			p->Vel.Y += force.Y;
-			p->Vel.Z += force.Z;
-		}
+		//	p->Vel.X += force.X;
+		//	p->Vel.Y += force.Y;
+		//	p->Vel.Z += force.Z;
+		//}
 			
 		
 		//boundaries
@@ -704,7 +704,7 @@ void AMPM3D::Tick(float DeltaTime)
 	SimulatingPipeLine(timesteps);
 	UpdateParticle();
 
-	MoveInteractionBall();
+	//MoveInteractionBall();
 	//CheckParticlePos();
 	//UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X, m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Y);
 }
