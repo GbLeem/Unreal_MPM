@@ -6,8 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "InteractionBall.h"
-
 
 #include "MPM3D.generated.h"
 

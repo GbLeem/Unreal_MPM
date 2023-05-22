@@ -7,7 +7,7 @@ AMPM3D::AMPM3D()
 	PrimaryActorTick.bTickEvenWhenPaused = true;
 
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
-	InstancedInteractionMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InteractiveInstancedMesh"));
+	//InstancedInteractionMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InteractiveInstancedMesh"));
 
 	SetRootComponent(InstancedStaticMeshComponent);
 	
@@ -122,8 +122,8 @@ void AMPM3D::UpdateParticle()
 		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}
 	InstancedStaticMeshComponent->MarkRenderStateDirty();
-	UE_LOG(LogTemp, Log, TEXT("tempValue 0 : %f %f %f"), Transforms[0].GetLocation().X, Transforms[0].GetLocation().Y, Transforms[0].GetLocation().Z);
-	UE_LOG(LogTemp, Log, TEXT("tempValue 100 : %f %f %f"), Transforms[1].GetLocation().X, Transforms[1].GetLocation().Y, Transforms[1].GetLocation().Z);
+	//UE_LOG(LogTemp, Log, TEXT("tempValue 0 : %f %f %f"), Transforms[0].GetLocation().X, Transforms[0].GetLocation().Y, Transforms[0].GetLocation().Z);
+	//UE_LOG(LogTemp, Log, TEXT("tempValue 100 : %f %f %f"), Transforms[1].GetLocation().X, Transforms[1].GetLocation().Y, Transforms[1].GetLocation().Z);
 }
 
 void AMPM3D::SimulatingPipeLine(double timestep)
