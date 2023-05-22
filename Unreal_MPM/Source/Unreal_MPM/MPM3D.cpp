@@ -39,16 +39,18 @@ AMPM3D::~AMPM3D()
 	}
 }
 
-void AMPM3D::Initialize()
+void AMPM3D::Initialize(const int box_size)
 {
 	//init grid and fill grids with (grid_res * grid_res) cells
 	const float spacing = 1.0f;
-	/*const int box_x = 16;
-	const int box_y = 16;
-	const int box_z = 16;*/
-	const int box_x = 8;
+	
+	/*const int box_x = 8;
 	const int box_y = 8;
-	const int box_z = 8;
+	const int box_z = 8;*/
+
+	const int box_x = box_size;
+	const int box_y = box_size;
+	const int box_z = box_size;
 	const float sx = grid_res / 2.0f;
 	const float sy = grid_res / 2.0f;
 	const float sz = grid_res / 2.0f;
@@ -100,6 +102,11 @@ void AMPM3D::Initialize()
 
 	//[TEST] Neo-Hookean
 	//P2GScatterMLS();
+}
+
+void AMPM3D::Initialize_second(const int box_size)
+{
+	//need?
 }
 
 void AMPM3D::UpdateParticle()
@@ -673,7 +680,7 @@ void AMPM3D::BeginPlay()
 	//static mesh
 	m_pMesh->SetWorldLocation(FVector(-420, -1260, 200));
 
-	Initialize();
+	Initialize(8);
 
 	if (InstancedStaticMeshComponent->GetInstanceCount() == 0)
 	{
@@ -689,10 +696,8 @@ void AMPM3D::BeginPlay()
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
 	}
 	
-	//instanced mesh 
-	FTransform InstancedInteractiveMeshTransform = FTransform(FVector(-420, -1260, 200));
-	InstancedInteractionMesh->AddInstance(InstancedInteractiveMeshTransform, false);
-
+	//instanced mesh [DELETE]
+	
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[0]->Pos.X, m_pParticles[0]->Pos.Y);
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[NumParticles-1]->Pos.X, m_pParticles[NumParticles-1]->Pos.Y);
 }
@@ -705,7 +710,8 @@ void AMPM3D::Tick(float DeltaTime)
 	UpdateParticle();
 
 	//MoveInteractionBall();
-	//CheckParticlePos();
+	
+	//CheckParticlePos(); //[DEBUG]
 	//UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X, m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Y);
 }
 

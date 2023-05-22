@@ -22,7 +22,10 @@ public:
 	virtual ~AMPM3D();
 
 	UFUNCTION(BlueprintCallable)
-	void Initialize();
+	void Initialize(const int box_size);
+
+	UFUNCTION(BlueprintCallable)
+	void Initialize_second(const int box_size);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateParticle();

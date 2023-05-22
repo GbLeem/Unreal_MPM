@@ -23,7 +23,7 @@ public class Unreal_MPM : ModuleRules
         string custom_cuda_lib_lib = "CUDALib/lib";
 
         PublicIncludePaths.Add(Path.Combine(project_root_path, custom_cuda_lib_include));
-        PublicAdditionalLibraries.Add(Path.Combine(project_root_path, custom_cuda_lib_lib, "cuda_lib_test.lib"));
+        PublicAdditionalLibraries.Add(Path.Combine(project_root_path, custom_cuda_lib_lib, "cuda_test.lib"));
 
         //cuda lib
         string cuda_path = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.8";
