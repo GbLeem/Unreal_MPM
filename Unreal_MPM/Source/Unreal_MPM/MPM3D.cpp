@@ -10,15 +10,15 @@ AMPM3D::AMPM3D()
 	//InstancedInteractionMesh = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InteractiveInstancedMesh"));
 
 	SetRootComponent(InstancedStaticMeshComponent);
-	
+
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
 	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
 
 	//Interactive test 2: instanced mesh
-	InstancedInteractionMesh->SetMobility(EComponentMobility::Static);
+	/*InstancedInteractionMesh->SetMobility(EComponentMobility::Static);
 	InstancedInteractionMesh->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-	InstancedInteractionMesh->SetGenerateOverlapEvents(false);
+	InstancedInteractionMesh->SetGenerateOverlapEvents(false);*/
 
 
 	//Interactive test 1: static mesh
@@ -43,7 +43,7 @@ void AMPM3D::Initialize(const int box_size)
 {
 	//init grid and fill grids with (grid_res * grid_res) cells
 	const float spacing = 1.0f;
-	
+
 	/*const int box_x = 8;
 	const int box_y = 8;
 	const int box_z = 8;*/
@@ -104,11 +104,6 @@ void AMPM3D::Initialize(const int box_size)
 	//P2GScatterMLS();
 }
 
-void AMPM3D::Initialize_second(const int box_size)
-{
-	//need?
-}
-
 void AMPM3D::UpdateParticle()
 {
 	TArray<FTransform> Transforms;
@@ -161,7 +156,7 @@ void AMPM3D::P2GFirst()
 		m_weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Z, 2) });
 
 		FMatrix C = p->C;
-		
+
 		//UE_LOG(LogTemp, Log, TEXT("matrix C's value: %f, %f,%f,%f"), C.M[0][0], C.M[1][1], C.M[2][2], C.M[3][3]);
 
 		//Scatter particle's momentum -> by Eulerian interpolation function
@@ -190,7 +185,7 @@ void AMPM3D::P2GFirst()
 
 					//convert index to 1d
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
-					
+
 					//[FIX] - 5/2 
 					for (auto& cell : m_pGrid)
 					{
@@ -217,7 +212,7 @@ void AMPM3D::P2GSecond(double timestep)
 		m_weights.Add(FVector3f{ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2),0.5f * FMath::Pow(0.5f - cell_diff.Z, 2) });
 		m_weights.Add(FVector3f{ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2), 0.75f - FMath::Pow(cell_diff.Z, 2) });
 		m_weights.Add(FVector3f{ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Z, 2) });
-		
+
 		//estimating particle volume by summing up neighbourhood's weighted mass contribution
 		//MPM course eq 152
 		float density = 0.0f;
@@ -257,7 +252,7 @@ void AMPM3D::P2GSecond(double timestep)
 		FMatrix strain = dudv;
 
 		//column 3, 2, 1
-		//1행 3열
+		//1??3??
 		//[row][col]
 		float trace = strain.M[0][0] + strain.M[1][1] + strain.M[2][2];
 		strain.M[2][2] = strain.M[1][1] = strain.M[0][0] = trace;
@@ -411,7 +406,7 @@ void AMPM3D::P2GMLS(double timestep)
 
 						//fused force/momentum update from MLS-MPM
 						//MLS-MPM eq.28
-						
+
 						eq_16_term_0.ApplyScale(weight);
 						//float2 momentum = math.mul(eq_16_term_0 * weight, cell_dist);
 						auto momentum = MultiplyMatrixAndVector(eq_16_term_0, cell_dist);
@@ -431,7 +426,7 @@ void AMPM3D::UpdateGrid(double timestep)
 	int gridIndex = 0;
 
 	for (auto& c : m_pGrid)
-	{		
+	{
 		if (c->mass > 0)
 		{
 			//calculate grid velocity based on P2G's momentum (Cell->Velocity = momentum)
@@ -502,7 +497,7 @@ void AMPM3D::G2P(double timestep)
 
 					FVector3f dist = { (cell_x.X - p->Pos.X) + 0.5f, (cell_x.Y - p->Pos.Y) + 0.5f, (cell_x.Z - p->Pos.Z) + 0.5f };
 					FVector3f weighted_velocity = m_pGrid[cell_index]->Vel * weight;
-					
+
 					auto term = FMatrix::Identity;
 					term.M[0][0] = weighted_velocity.X * dist.X;
 					term.M[1][0] = weighted_velocity.X * dist.X;
@@ -550,11 +545,11 @@ void AMPM3D::G2P(double timestep)
 		UE_LOG(LogTemp, Log, TEXT("particle location: %f / %f / %f"), p->Pos.X * 100.f, p->Pos.Y * 100.f, p->Pos.Z * 100.f);*/
 
 		auto dotproduct_res = sqrt(dist_sphere.X * dist_sphere.X + dist_sphere.Y * dist_sphere.Y + dist_sphere.Z * dist_sphere.Z);
-		
+
 		//UE_LOG(LogTemp, Log, TEXT("dot: %f"), dotproduct_res);
 
 		//if (dotproduct_res < 20) //[TEST]do not interaction
-		
+
 		//[TEST] 5/16 delete for MLS test
 		//if (dotproduct_res < 2200) 
 		//{
@@ -565,8 +560,8 @@ void AMPM3D::G2P(double timestep)
 		//	p->Vel.Y += force.Y;
 		//	p->Vel.Z += force.Z;
 		//}
-			
-		
+
+
 		//boundaries
 		FVector3f x_n = p->Pos + p->Vel;
 		/*const float wall_min = 3;
@@ -664,7 +659,7 @@ void AMPM3D::G2PMLS(double timestep)
 		auto Fp_new = FMatrix::Identity;
 
 		Fp_new += p->C.ApplyScale(timestep);
-		
+
 		for (auto& d : m_DeformationGradient)
 		{
 			d = Fp_new * d;
@@ -695,9 +690,9 @@ void AMPM3D::BeginPlay()
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
 	}
-	
+
 	//instanced mesh [DELETE]
-	
+
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[0]->Pos.X, m_pParticles[0]->Pos.Y);
 	//UE_LOG(LogTemp, Log, TEXT("particle xpos: %f, ypos : %f"), m_pParticles[NumParticles-1]->Pos.X, m_pParticles[NumParticles-1]->Pos.Y);
 }
@@ -710,7 +705,7 @@ void AMPM3D::Tick(float DeltaTime)
 	UpdateParticle();
 
 	//MoveInteractionBall();
-	
+
 	//CheckParticlePos(); //[DEBUG]
 	//UE_LOG(LogTemp, Log, TEXT("ball location: %f / %f / %f"), m_pMesh->GetComponentLocation().X, m_pMesh->GetComponentLocation().Y, m_pMesh->GetComponentLocation().Y);
 }

@@ -14,22 +14,19 @@ UCLASS()
 class UNREAL_MPM_API AMPM3D : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	AMPM3D();
 	virtual ~AMPM3D();
 
 	UFUNCTION(BlueprintCallable)
-	void Initialize(const int box_size);
+		void Initialize(const int box_size);
 
 	UFUNCTION(BlueprintCallable)
-	void Initialize_second(const int box_size);
+		void UpdateParticle();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateParticle();
-
-	UFUNCTION(BlueprintCallable)
-	void SimulatingPipeLine(double timestep);
+		void SimulatingPipeLine(double timestep);
 
 	//function step
 	void ClearGrid();
@@ -44,7 +41,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
@@ -65,7 +62,7 @@ public:
 
 	struct Particle
 	{
-		FVector3f Pos; 
+		FVector3f Pos;
 		FVector3f Vel;
 		FMatrix C; //affine momentum matrix
 		float mass;
@@ -74,13 +71,13 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere)
-	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
+		UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
+
+	/*UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* InstancedInteractionMesh;*/
 
 	UPROPERTY(VisibleAnywhere)
-	UInstancedStaticMeshComponent* InstancedInteractionMesh;
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* m_pMesh;
+		UStaticMeshComponent* m_pMesh;
 
 	//calculating variables
 	const int grid_res = 16;
@@ -89,7 +86,7 @@ public:
 
 	//simulation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float dt = 1.0f;
+		float dt = 1.0f;
 	const float iterations = static_cast<int>(1.f / dt);
 
 	const float gravity = -0.03f;
@@ -109,19 +106,23 @@ public:
 
 	//Particle and Grid
 	TArray<Particle*> m_pParticles;
+
 	TArray<Cell*> m_pGrid;
 	TArray<FVector3f> TempPositions;
 	TArray<FMatrix> m_DeformationGradient;
- 
+
+	//[ADD] 5.26 particles array for interaction particles and particles
+	//TArray<TArray<Particle*>> m_pParticlesArr;
+
 	int NumParticles;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	double timesteps = 1.0f; //timestep fit to tick?
+		double timesteps = 1.0f; //timestep fit to tick?
 
 	bool firstRound = true;
 
 
-	
+
 	//for interaction
 	//FVector3f BallPosition = AInteractionBall::BallTransform;
 	//float InteractionDistance = 100.f;
