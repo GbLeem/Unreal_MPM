@@ -16,7 +16,15 @@ AMPM2D::AMPM2D()
 
 AMPM2D::~AMPM2D()
 {
+	for (auto& c : m_pGrid)
+	{
+		delete c;
+	}
 
+	for (auto& p : m_pParticles)
+	{
+		delete p;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -39,22 +47,30 @@ void AMPM2D::BeginPlay()
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
 	}
+
+	/*FMatrix2x2 a = { 1,2,3,4 };
+	FMatrix2x2 b = Transpose(a);
+	float a1, b1, c1, d1;
+	b.GetMatrix(a1, b1, c1, d1);
+	UE_LOG(LogTemp, Log, TEXT("%f, %f, %f, %f"), a1, b1, c1, d1);*/
 }
 
-// Called every frame
 void AMPM2D::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	PipeLine();
 	UpdateInstancedMesh();
+
+	//UE_LOG(LogTemp, Log, TEXT("particle 10 pos %f %f"), m_pParticles[10]->x.X, m_pParticles[10]->x.Y);
+	//UE_LOG(LogTemp, Log, TEXT("particle 100 pos %f %f"), m_pParticles[100]->x.X, m_pParticles[100]->x.Y);
 }
 
 void AMPM2D::Initialize()
 {
-	const float spacing = 0.5f;
-	const int box_x = 16;
-	const int box_y = 16;
+	const float spacing = 1.f;
+	const int box_x = 32;
+	const int box_y = 32;
 	const float sx = grid_res / 2.0f;
 	const float sy = grid_res / 2.0f;
 	
@@ -67,6 +83,7 @@ void AMPM2D::Initialize()
 			TempPositions.Add(Pos);
 		}
 	}
+
 	NumParticles = TempPositions.Num();
 	m_pParticles.Empty(NumParticles);
 	Fs.Empty(NumParticles);
@@ -91,6 +108,8 @@ void AMPM2D::Initialize()
 		m_pGrid.Add(c);
 	}
 
+	P2G();
+
 	for (auto& p : m_pParticles)
 	{
 		FVector2f cell_idx = { FMath::Floor(p->x.X), FMath::Floor(p->x.Y) };
@@ -109,18 +128,24 @@ void AMPM2D::Initialize()
 			{
 				float weight = weights[gx].X * weights[gy].Y;
 
-				int cell_index = (((int)(cell_idx.X) + gx - 1) * grid_res + (int)(cell_idx.Y) + gy - 1);
+				int cell_index = ((int)(cell_idx.X) + gx - 1) * grid_res + ((int)(cell_idx.Y) + gy - 1);
 				density += m_pGrid[cell_index]->mass * weight;
 			}
 		}
 
 		float volume = p->mass / density;
 		p->volume_0 = volume;
+		
+		//UE_LOG(LogTemp, Log, TEXT("density %f"), density); 
 	}
 
 	//[TEST] 1024..
 	//UE_LOG(LogTemp, Log, TEXT("Fs count %d"), Fs.Num());
 	//UE_LOG(LogTemp, Log, TEXT("particle count %d"), m_pParticles.Num());
+
+	/*float a, b, c, d;
+	Fs[1000].GetMatrix(a,b,c,d);
+	UE_LOG(LogTemp, Log, TEXT("Fs matrix %f %f %f %f"), a,b,c,d);*/
 }
 
 void AMPM2D::ClearGrid()
@@ -132,31 +157,37 @@ void AMPM2D::ClearGrid()
 	}
 }
 
+
 void AMPM2D::P2G()
 {
 	//TArray<FVector2f> weights;
 	float a, b, c, d = 0;
 	float a1, b1, c1, d1 = 0;
 
-	for (int i = 0; i < NumParticles; ++i)
+	int i = 0;
+	for (auto& p : m_pParticles)
 	{
 		FMatrix2x2 stress = { 0.f, 0.f, 0.f, 0.f };
 
 		FMatrix2x2 F = Fs[i];
+		//F.GetMatrix(a, b, c, d);
+		//UE_LOG(LogTemp, Log, TEXT("F data %f %f %f %f"), a, b, c, d);
+
 		float J = F.Determinant();
 
-		float volume = m_pParticles[i]->volume_0 * J;
+		float volume = p->volume_0 * J;
 
 		FMatrix2x2 F_T = Transpose(F);
 		FMatrix2x2 F_inv_T = F_T.Inverse();
 		FMatrix2x2 F_minus_F_inv_T = MinusMatrix(F, F_inv_T);
 
-		//auto P_term_0 = elastic_mu * (F_minus_F_inv_T);
-		//float a, b, c, d = 0;
 		F_minus_F_inv_T.GetMatrix(a, b, c, d);
 		FMatrix2x2 P_term_0 = { elastic_mu * a, elastic_mu * b, elastic_mu * c, elastic_mu * d };
 
-		//float a1, b1, c1, d1 = 0;
+		//[TEST]
+		//P_term_0.GetMatrix(a, b, c, d);
+		//UE_LOG(LogTemp, Log, TEXT("P_term0 %d : %f %f %f %f"),i, a, b, c, d);
+
 		F_inv_T.GetMatrix(a1, b1, c1, d1);
 		FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1,elastic_lambda * log(J) * d1 };
 
@@ -173,8 +204,8 @@ void AMPM2D::P2G()
 		FMatrix2x2 eq_16_term_0 = { -volume * 4 * dt * a, -volume * 4 * dt * b, -volume * 4 * dt * c, -volume * 4 * dt * d };
 
 		//interpolation
-		FVector2f cell_idx = { FMath::Floor(m_pParticles[i]->x.X), FMath::Floor(m_pParticles[i]->x.Y)};
-		FVector2f cell_diff = { (m_pParticles[i]->x.X - cell_idx.X) - 0.5f,(m_pParticles[i]->x.Y - cell_idx.Y) - 0.5f };
+		FVector2f cell_idx = { FMath::Floor(p->x.X), FMath::Floor(p->x.Y) };
+		FVector2f cell_diff = { (p->x.X - cell_idx.X) - 0.5f,(p->x.Y - cell_idx.Y) - 0.5f };
 
 		TArray<FVector2f> weights;
 		weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) });
@@ -188,20 +219,20 @@ void AMPM2D::P2G()
 				float weight = weights[gx].X * weights[gy].Y;
 
 				FIntVector2 cell_x = { (int)(cell_idx.X) + gx - 1, (int)(cell_idx.Y) + gy - 1 };
-				FVector2f cell_dist = { (cell_x.X - m_pParticles[i]->x.X + 0.5f), (cell_x.Y - m_pParticles[i]->x.Y + 0.5f) };
+				FVector2f cell_dist = { (cell_x.X - p->x.X + 0.5f), (cell_x.Y - p->x.Y + 0.5f) };
 
 				//float a, b, c, d = 0;
-				m_pParticles[i]->C.GetMatrix(a, b, c, d);
+				p->C.GetMatrix(a, b, c, d);
 				FVector2f Q = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
 
 				int cell_index = ((int)(cell_idx.X) + gx - 1 * grid_res + (int)(cell_idx.Y) + gy - 1);
 
 				for (auto& cell : m_pGrid)
 				{
-					float weighted_mass = weight * m_pParticles[i]->mass;
+					float weighted_mass = weight *p->mass;
 					cell->mass += weighted_mass;
 
-					cell->v += weighted_mass * (m_pParticles[i]->v + Q);
+					cell->v += weighted_mass * (p->v + Q);
 
 					eq_16_term_0.GetMatrix(a, b, c, d);
 					eq_16_term_0 = { a * weight, b * weight,c * weight,d * weight };
@@ -210,23 +241,9 @@ void AMPM2D::P2G()
 					FVector2f momentum = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
 					cell->v += momentum;
 				}
-				/*Cell* cell = m_pGrid[cell_index];
-
-				float weighted_mass = weight * m_pParticles[i]->mass;
-				cell->mass += weighted_mass;
-
-				cell->v += weighted_mass * (m_pParticles[i]->v + Q);
-
-				eq_16_term_0.GetMatrix(a, b, c, d);
-				eq_16_term_0 = { a * weight, b * weight,c * weight,d * weight };
-
-				eq_16_term_0.GetMatrix(a, b, c, d);
-				FVector2f momentum = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
-				cell->v += momentum;
-				
-				m_pGrid[cell_index] = cell;*/
 			}
 		}
+		++i;
 	}
 }
 
@@ -279,7 +296,7 @@ void AMPM2D::G2P()
 				float weight = weights[gx].X * weights[gy].Y;
 
 				FIntVector2 cell_x = { cell_idx.X + gx - 1, cell_idx.Y + gy - 1 };
-				int cell_index = (((int)(cell_idx.X) + gx - 1) * grid_res + (int)(cell_idx.Y) + gy - 1);
+				int cell_index = ((int)(cell_idx.X) * grid_res + (int)(cell_idx.Y));
 
 				FVector2f dist = { cell_x.X - p->x.X + 0.5f, cell_x.Y - p->x.Y + 0.5f };
 				FVector2f weighted_velocity = m_pGrid[cell_index]->v * weight;
@@ -304,15 +321,30 @@ void AMPM2D::G2P()
 		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);
 		p->x.Y = FMath::Clamp(p->x.Y, 1, grid_res - 2);
 
+		//Add force
+		{
+			FVector2f force = { 0.5f, 0.f };
+			p->v += force;
+		}
 
-		FMatrix2x2 Fp_new = { 1.f, 0.f, 0.f, 1.f };
+		for (auto& f : Fs)
+		{
+			FMatrix2x2 Fp_new = { 1.f, 0.f, 0.f, 1.f };
+			float a1, b1, c1, d1 = 0;
+			Fp_new.GetMatrix(a1, b1, c1, d1);
+			p->C.GetMatrix(a, b, c, d);
+
+			Fp_new = { a1 + a * dt, b1 + b * dt, c1 + c * dt, d1 + d * dt };
+			f = MultiplyMatrix(Fp_new, f);
+
+		}
+		/*FMatrix2x2 Fp_new = { 1.f, 0.f, 0.f, 1.f };
 		float a1, b1, c1, d1 = 0;
 		Fp_new.GetMatrix(a1, b1, c1, d1);
 		p->C.GetMatrix(a, b, c, d);
 
 		Fp_new = { a1 + a * dt, b1 + b * dt, c1 + c * dt, d1 + d * dt };
-		Fs[i] = MultiplyMatrix(Fp_new, Fs[i]);
-
+		Fs[i] = MultiplyMatrix(Fp_new, Fs[i]);*/
 		++i;
 	}
 }
@@ -356,7 +388,7 @@ FMatrix2x2 AMPM2D::MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
 	float a1, b1, c1, d1, a2, b2, c2, d2 = 0.f;
 	m1.GetMatrix(a1, b1, c1, d1);
 	m2.GetMatrix(a2, b2, c2, d2);
-	resultMatrix = { a1 - a2,b1 - b2,c1 - c2,d1 - d2 };
+	resultMatrix = { a1 - a2, b1 - b2, c1 - c2, d1 - d2 };
 
 	return resultMatrix;
 }
@@ -365,16 +397,12 @@ FMatrix2x2 AMPM2D::MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
 {
 	FMatrix2x2 resultMatrix;
 
-	float a1, b1, c1, d1 = 0;
-	float a2, b2, c2, d2 = 0;
+	float a1, b1, c1, d1 = 0.f;
+	float a2, b2, c2, d2 = 0.f;
 	m1.GetMatrix(a1, b1, c1, d1);
 	m2.GetMatrix(a2, b2, c2, d2);
-	//UE_LOG(LogTemp, Log, TEXT("Matrix1 result %f, %f, %f, %f"), a1, b1, c1, d1);
-	//UE_LOG(LogTemp, Log, TEXT("Matrix2 result %f, %f, %f, %f"), a2, b2, c2, d2);
 	
 	resultMatrix = { a1 * a2 + b1 * c2, a1 * b2 + b1 * d2, c1 * a2 + d1 * c2, c1 * b2 + d1 * d2 };
-	//resultMatrix.GetMatrix(a1, b1, c1, d1);
-	//UE_LOG(LogTemp, Log, TEXT("result Matrix result %f, %f, %f, %f"), a1, b1, c1, d1);
 
 	return resultMatrix;
 }

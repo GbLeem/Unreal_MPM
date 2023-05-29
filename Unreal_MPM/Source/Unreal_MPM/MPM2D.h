@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Components/InstancedStaticMeshComponent.h"
-#include "MatrixTypes.h"
+//#include "MatrixTypes.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -15,7 +15,6 @@ struct Particle
 	FVector2f x; //pos
 	FVector2f v; //vel
 	FMatrix2x2 C; //affine momentum from APIC
-	float Jp; //determinant of deformation gradient
 	float mass;
 	float volume_0;
 };
@@ -65,17 +64,13 @@ public:
 	const int grid_res = 64;
 	const int NumCells = grid_res * grid_res;
 	
-	const int division = 16;
-
-	const float dt = 1.0f;
-	const int iterations = static_cast<int>(1.0f / dt);
+	const float dt = 0.5f;
 	const float gravity = -0.3f;
 
-	float elastic_lambda = 10.f;
-	float elastic_mu = 20.f;
+	float elastic_lambda = 1000.f;
+	float elastic_mu = 2000.f;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	int NumParticles = 0;
+	int NumParticles;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
