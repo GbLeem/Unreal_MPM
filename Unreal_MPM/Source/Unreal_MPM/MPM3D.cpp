@@ -637,7 +637,6 @@ void AMPM3D::G2PMLS(double timestep)
 					term.M[1][2] = weighted_velocity.Z * dist.Z;
 					term.M[2][2] = weighted_velocity.Z * dist.Z;
 
-
 					B += term;
 					//UE_LOG(LogTemp, Log, TEXT("(0,0) : %f (1,1) : %f"), B.M[0][0], B.M[1][1]);
 
@@ -654,7 +653,6 @@ void AMPM3D::G2PMLS(double timestep)
 		p->Pos.X = FMath::Clamp(p->Pos.X, 1, grid_res - 2);
 		p->Pos.Y = FMath::Clamp(p->Pos.Y, 1, grid_res - 2);
 		p->Pos.Z = FMath::Clamp(p->Pos.Z, 1, grid_res - 2);
-
 
 		auto Fp_new = FMatrix::Identity;
 
