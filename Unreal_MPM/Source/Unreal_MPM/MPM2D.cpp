@@ -1,6 +1,7 @@
 #include "MPM2D.h"
 
 AMPM2D::AMPM2D()
+	:NumParticles(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bTickEvenWhenPaused = true;
@@ -189,7 +190,7 @@ void AMPM2D::P2G()
 		//UE_LOG(LogTemp, Log, TEXT("P_term0 %d : %f %f %f %f"),i, a, b, c, d);
 
 		F_inv_T.GetMatrix(a1, b1, c1, d1);
-		FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1,elastic_lambda * log(J) * d1 };
+		FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1, elastic_lambda * log(J) * d1 };
 
 		P_term_0.GetMatrix(a, b, c, d);
 		P_term_1.GetMatrix(a1, b1, c1, d1);
@@ -205,7 +206,7 @@ void AMPM2D::P2G()
 
 		//interpolation
 		FVector2f cell_idx = { FMath::Floor(p->x.X), FMath::Floor(p->x.Y) };
-		FVector2f cell_diff = { (p->x.X - cell_idx.X) - 0.5f,(p->x.Y - cell_idx.Y) - 0.5f };
+		FVector2f cell_diff = { (p->x.X - cell_idx.X) - 0.5f, (p->x.Y - cell_idx.Y) - 0.5f };
 
 		TArray<FVector2f> weights;
 		weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) });
@@ -225,7 +226,7 @@ void AMPM2D::P2G()
 				p->C.GetMatrix(a, b, c, d);
 				FVector2f Q = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
 
-				int cell_index = ((int)(cell_idx.X) + gx - 1 * grid_res + (int)(cell_idx.Y) + gy - 1);
+				int cell_index = (int)(cell_idx.X) * grid_res + (int)(cell_idx.Y);
 
 				for (auto& cell : m_pGrid)
 				{
@@ -235,7 +236,7 @@ void AMPM2D::P2G()
 					cell->v += weighted_mass * (p->v + Q);
 
 					eq_16_term_0.GetMatrix(a, b, c, d);
-					eq_16_term_0 = { a * weight, b * weight,c * weight,d * weight };
+					eq_16_term_0 = { a * weight, b * weight, c * weight, d * weight };
 
 					eq_16_term_0.GetMatrix(a, b, c, d);
 					FVector2f momentum = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
