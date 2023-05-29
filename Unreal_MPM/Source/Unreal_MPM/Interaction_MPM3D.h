@@ -21,6 +21,7 @@ public:
 	void Initialize();
 	void SimulatingPipeLine(double timestep);
 	void UpdateParticle();
+	void AddForce();
 
 	void ClearGrid();
 	void P2GFirst();
@@ -50,6 +51,7 @@ public:
 		FMatrix C; //affine momentum matrix
 		FMatrix F; //Deformation gradient
 
+		bool First;
 		float mass;
 		float volume_0;
 	};

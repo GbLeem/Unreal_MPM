@@ -1,17 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "MPM2D.h"
 
-
-// Sets default values
 AMPM2D::AMPM2D()
 {
-	PrimaryActorTick.bTickEvenWhenPaused = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bTickEvenWhenPaused = true;
+
+	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMesh"));
+
+	SetRootComponent(InstancedStaticMeshComponent);
+
+	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Static);
+	InstancedStaticMeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	InstancedStaticMeshComponent->SetGenerateOverlapEvents(false);
 }
 
 AMPM2D::~AMPM2D()
 {
+
 }
 
 // Called when the game starts or when spawned
@@ -19,194 +24,358 @@ void AMPM2D::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Initialize();
+	Initialize();
+
+	if (InstancedStaticMeshComponent->GetInstanceCount() == 0)
+	{
+		TArray<FTransform> Transforms;
+
+		Transforms.Empty(NumParticles);
+
+		for (int i = 0; i < NumParticles; ++i)
+		{
+			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
+			Transforms.Add(tempValue);
+		}
+		InstancedStaticMeshComponent->AddInstances(Transforms, false);
+	}
 }
 
 // Called every frame
 void AMPM2D::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	/*for (int i = 0; i < 1; ++i)
-	{
-		Each_Simulation_Step();
-	}*/
+	
+	PipeLine();
+	UpdateInstancedMesh();
 }
 
 void AMPM2D::Initialize()
 {
-	TArray<FVector2f> temp_positions;
-	const float spacing = 1.0f;
+	const float spacing = 0.5f;
 	const int box_x = 16;
 	const int box_y = 16;
 	const float sx = grid_res / 2.0f;
 	const float sy = grid_res / 2.0f;
-	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing)
+	
+	for (float i = -box_x / 2; i < box_x / 2; i += spacing)
 	{
-		for (float j = sy - box_y / 2; i < sy + box_y / 2; j += spacing)
+		for (float j = -box_y / 2; j < box_y / 2; j += spacing)
 		{
-			auto pos = FVector2f(i, j);
-			temp_positions.Add(pos);
+			auto Pos = FVector2f{ sx + i, sy + j };
+
+			TempPositions.Add(Pos);
 		}
 	}
-	num_particles = temp_positions.Num();
+	NumParticles = TempPositions.Num();
+	m_pParticles.Empty(NumParticles);
+	Fs.Empty(NumParticles);
 
-	particles.Reserve(num_particles);
-
-	for (int i = 0; i < num_particles; ++i)
+	for (int i = 0; i < NumParticles; ++i)
 	{
 		Particle* p = new Particle();
-		p->x = temp_positions[i];
-		float randNum = FMath::FRandRange(0.f, 1.f);
-		p->v = FVector2f(randNum - 0.5f, randNum - 0.5f + 2.75f) * 0.5f;
-		//p.C = 0;
-		p->mass = 1.0f;
+		p->x = TempPositions[i];
+		p->v = {0.f,0.f};
+		p->C = { 0.f,0.f,0.f,0.f };
+		p->mass = 1.f;
+		m_pParticles.Add(p);
+
+		Fs.Add({ 1.f, 0.f, 0.f, 1.f });
 	}
 
-	grid.Reserve(num_cells);
-
-	for (int i = 0; i < num_cells; ++i)
+	m_pGrid.Empty(NumCells);
+	for (int i = 0; i < NumCells; ++i)
 	{
-		grid[i] = new Cell();
+		Cell* c = new Cell();
+		c->v = { 0.f, 0.f };
+		m_pGrid.Add(c);
 	}
 
-	//? SimRenderer 코드 분석 필요
-	//sim_renderer = GameObject.FindObjectOfType<SimRenderer>();
-	//sim_renderer.Initialise(num_particles, Marshal.SizeOf(new Particle()));
+	for (auto& p : m_pParticles)
+	{
+		FVector2f cell_idx = { FMath::Floor(p->x.X), FMath::Floor(p->x.Y) };
+		FVector2f cell_diff = { (p->x.X - cell_idx.X) - 0.5f,(p->x.Y - cell_idx.Y) - 0.5f };
+
+		TArray<FVector2f> weights;
+		weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) });
+		weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) });
+		weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) });
+
+		float density = 0.f;
+
+		for (int gx = 0; gx < 3; ++gx)
+		{
+			for (int gy = 0; gy < 3; ++gy)
+			{
+				float weight = weights[gx].X * weights[gy].Y;
+
+				int cell_index = (((int)(cell_idx.X) + gx - 1) * grid_res + (int)(cell_idx.Y) + gy - 1);
+				density += m_pGrid[cell_index]->mass * weight;
+			}
+		}
+
+		float volume = p->mass / density;
+		p->volume_0 = volume;
+	}
+
+	//[TEST] 1024..
+	//UE_LOG(LogTemp, Log, TEXT("Fs count %d"), Fs.Num());
+	//UE_LOG(LogTemp, Log, TEXT("particle count %d"), m_pParticles.Num());
 }
 
-void AMPM2D::Each_Simulation_Step()
+void AMPM2D::ClearGrid()
 {
-	//reset grid scratch-pad
-	for (int i = 0; i < num_cells; ++i)
+	for (auto& c : m_pGrid)
 	{
-		auto cell = grid[i];
-
-		cell->mass = 0;
-		cell->v = { 0.f,0.f };
-
-		grid[i] = cell;
+		c->mass = 0;
+		c->v = { 0.f, 0.f };
 	}
+}
 
-	//p2g
-	for (int i = 0; i < num_particles; ++i)
+void AMPM2D::P2G()
+{
+	//TArray<FVector2f> weights;
+	float a, b, c, d = 0;
+	float a1, b1, c1, d1 = 0;
+
+	for (int i = 0; i < NumParticles; ++i)
 	{
-		auto p = particles[i];
+		FMatrix2x2 stress = { 0.f, 0.f, 0.f, 0.f };
 
-		FIntPoint cell_index = static_cast<FIntPoint>(p->x.X, p->x.Y);
-		FVector2f cell_diff = (p->x - cell_index) - 0.5f;
+		FMatrix2x2 F = Fs[i];
+		float J = F.Determinant();
 
-		Weights[0] = (0.5f * FVector2f(FMath::Pow(0.5f - cell_diff.X, 2), FMath::Pow(0.5f - cell_diff.Y, 2)));//index 0
-		Weights[1] = (0.75f * FVector2f(FMath::Pow(cell_diff.X, 2), FMath::Pow(cell_diff.Y, 2))); //index 1
-		Weights[2] = (0.5f * FVector2f(FMath::Pow(0.5f + cell_diff.X, 2), FMath::Pow(0.5f + cell_diff.Y, 2)));//index 2
+		float volume = m_pParticles[i]->volume_0 * J;
 
-		//for all surrounding 9 cells
-		for (UINT gx = 0; gx < 3; ++gx)
+		FMatrix2x2 F_T = Transpose(F);
+		FMatrix2x2 F_inv_T = F_T.Inverse();
+		FMatrix2x2 F_minus_F_inv_T = MinusMatrix(F, F_inv_T);
+
+		//auto P_term_0 = elastic_mu * (F_minus_F_inv_T);
+		//float a, b, c, d = 0;
+		F_minus_F_inv_T.GetMatrix(a, b, c, d);
+		FMatrix2x2 P_term_0 = { elastic_mu * a, elastic_mu * b, elastic_mu * c, elastic_mu * d };
+
+		//float a1, b1, c1, d1 = 0;
+		F_inv_T.GetMatrix(a1, b1, c1, d1);
+		FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1,elastic_lambda * log(J) * d1 };
+
+		P_term_0.GetMatrix(a, b, c, d);
+		P_term_1.GetMatrix(a1, b1, c1, d1);
+
+		FMatrix2x2 P = { a + a1, b + b1, c + c1, d + d1 };
+
+		P = MultiplyMatrix(P, F_T);
+		P.GetMatrix(a, b, c, d);
+		stress = { (1.f / J) * a, (1.f / J) * b, (1.f / J) * c, (1.f / J) * d };;
+
+		stress.GetMatrix(a, b, c, d);
+		FMatrix2x2 eq_16_term_0 = { -volume * 4 * dt * a, -volume * 4 * dt * b, -volume * 4 * dt * c, -volume * 4 * dt * d };
+
+		//interpolation
+		FVector2f cell_idx = { FMath::Floor(m_pParticles[i]->x.X), FMath::Floor(m_pParticles[i]->x.Y)};
+		FVector2f cell_diff = { (m_pParticles[i]->x.X - cell_idx.X) - 0.5f,(m_pParticles[i]->x.Y - cell_idx.Y) - 0.5f };
+
+		TArray<FVector2f> weights;
+		weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) });
+		weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) });
+		weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) });
+
+		for (int gx = 0; gx < 3; ++gx)
 		{
-			for (UINT gy = 0; gy < 3; ++gy)
+			for (int gy = 0; gy < 3; ++gy)
 			{
-				float weight = Weights[gx][0] * Weights[gy][1];
+				float weight = weights[gx].X * weights[gy].Y;
 
-				FIntPoint cell_x = FIntPoint(cell_index.X + gx - 1, cell_index.Y + gy - 1);
-				FVector2f cell_dist = FVector2f(cell_x.X - p->x.X, cell_x.Y - p->x.Y) + 0.5;
-				//FVector2f Q = FVector2D(p.C.GetColumn(0) * cell_dist.X ,p.C.GetColumn(0) * cell_dist.Y); // matrix 2*2 와 vector 곱
-				FVector2f Q = 0;
+				FIntVector2 cell_x = { (int)(cell_idx.X) + gx - 1, (int)(cell_idx.Y) + gy - 1 };
+				FVector2f cell_dist = { (cell_x.X - m_pParticles[i]->x.X + 0.5f), (cell_x.Y - m_pParticles[i]->x.Y + 0.5f) };
 
-				float mass_contrib = weight * p->mass;
+				//float a, b, c, d = 0;
+				m_pParticles[i]->C.GetMatrix(a, b, c, d);
+				FVector2f Q = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
 
-				//converting 2D index to 1D
-				int New_cell_index = static_cast<int>(cell_x.X) * grid_res + static_cast<int>(cell_x.Y);
-				Cell* cell = grid[New_cell_index];
+				int cell_index = ((int)(cell_idx.X) + gx - 1 * grid_res + (int)(cell_idx.Y) + gy - 1);
 
-				//scatter mass to the grid
-				cell->mass += mass_contrib;
+				for (auto& cell : m_pGrid)
+				{
+					float weighted_mass = weight * m_pParticles[i]->mass;
+					cell->mass += weighted_mass;
 
-				cell->v += mass_contrib * (p->v + Q);
-				grid[New_cell_index] = cell;
+					cell->v += weighted_mass * (m_pParticles[i]->v + Q);
+
+					eq_16_term_0.GetMatrix(a, b, c, d);
+					eq_16_term_0 = { a * weight, b * weight,c * weight,d * weight };
+
+					eq_16_term_0.GetMatrix(a, b, c, d);
+					FVector2f momentum = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
+					cell->v += momentum;
+				}
+				/*Cell* cell = m_pGrid[cell_index];
+
+				float weighted_mass = weight * m_pParticles[i]->mass;
+				cell->mass += weighted_mass;
+
+				cell->v += weighted_mass * (m_pParticles[i]->v + Q);
+
+				eq_16_term_0.GetMatrix(a, b, c, d);
+				eq_16_term_0 = { a * weight, b * weight,c * weight,d * weight };
+
+				eq_16_term_0.GetMatrix(a, b, c, d);
+				FVector2f momentum = { a * cell_dist.X + b * cell_dist.Y, c * cell_dist.X + d * cell_dist.Y };
+				cell->v += momentum;
+				
+				m_pGrid[cell_index] = cell;*/
 			}
 		}
 	}
+}
 
-
-	//grid velocity update
-	for (int i = 0; i < num_cells; ++i)
+void AMPM2D::UpdateGrid()
+{
+	int i = 0;
+	for (auto& c : m_pGrid)
 	{
-		auto cell = grid[i];
-
-		if (cell->mass > 0)
+		if (c->mass > 0)
 		{
-			//convert momentum to velocity, apply gravity
-			cell->v /= cell->mass;
-			cell->v += dt * FVector2f(0, gravity);
+			c->v /= c->mass;
+			c->v += dt * FVector2f(0, gravity);
 
-			//boundary conditions
 			int x = i / grid_res;
 			int y = i % grid_res;
 			if (x<2 || x>grid_res - 3)
 			{
-				cell->v.X = 0;
+				c->v.X = 0;
 			}
 			if (y<2 || y>grid_res - 3)
 			{
-				cell->v.Y = 0;
+				c->v.Y = 0;
 			}
-
-			grid[i] = cell;
 		}
-		grid[i] = cell;
+		++i;
 	}
+}
 
-	//G2P
-	for (int i = 0; i < num_particles; ++i)
+void AMPM2D::G2P()
+{
+	int i = 0;
+
+	for (auto& p : m_pParticles)
 	{
-		auto p = particles[i];
+		p->v = { 0.f,0.f };
 
-		//reset particle velocity. we calculate it from scratch each step using the grid
-		p->v.Zero();
+		FIntVector2 cell_idx = { (int)p->x.X, (int)p->x.Y };
+		FVector2f cell_diff = { p->x.X - cell_idx.X - 0.5f, p->x.Y - cell_idx.Y - 0.5f };
 
-		//quadratic interpolation weights
-		FIntPoint cell_index2 = static_cast<FIntPoint>(p->x.X, p->x.Y);
-		FVector2f cell_diff2 = (p->x - cell_index2) - 0.5f;
+		TArray<FVector2f> weights;
+		weights.Add({ 0.5f * FMath::Pow(0.5f - cell_diff.X, 2), 0.5f * FMath::Pow(0.5f - cell_diff.Y, 2) });
+		weights.Add({ 0.75f - FMath::Pow(cell_diff.X, 2), 0.75f - FMath::Pow(cell_diff.Y, 2) });
+		weights.Add({ 0.5f * FMath::Pow(0.5f + cell_diff.X, 2), 0.5f * FMath::Pow(0.5f + cell_diff.Y, 2) });
 
-		Weights[0] = 0.5f * FVector2f(FMath::Pow(0.5f - cell_diff2.X, 2), FMath::Pow(0.5f - cell_diff2.Y, 2));
-		Weights[1] = 0.75f * FVector2f(FMath::Pow(cell_diff2.X, 2), FMath::Pow(cell_diff2.Y, 2));
-		Weights[2] = 0.5f * FVector2f(FMath::Pow(0.5f + cell_diff2.X, 2), FMath::Pow(0.5f + cell_diff2.Y, 2));
-
-
-		//APIC
-		FMatrix2x2 B = {0,0,0,0};
-		
-		for (UINT gx = 0; gx < 3; ++gx)
+		FMatrix2x2 B = { 0.f, 0.f, 0.f, 0.f };
+		for (int gx = 0; gx < 3; ++gx)
 		{
-			for (UINT gy = 0; gy < 3; ++gy)
+			for (int gy = 0; gy < 3; ++gy)
 			{
-				float weight = Weights[gx].X * Weights[gy].Y;
+				float weight = weights[gx].X * weights[gy].Y;
 
-				FIntPoint cell_x = FIntPoint(cell_index2.X + gx - 1, cell_index2.Y + gy - 1);
-				int cell_index = static_cast<int>(cell_x.X) * grid_res + static_cast<int>(cell_x.Y);
+				FIntVector2 cell_x = { cell_idx.X + gx - 1, cell_idx.Y + gy - 1 };
+				int cell_index = (((int)(cell_idx.X) + gx - 1) * grid_res + (int)(cell_idx.Y) + gy - 1);
 
-				FVector2f dist = (cell_x.X - p->x.X, cell_x.Y - p->x.Y) + 0.5f;
-				FVector2f weighted_velocity = grid[cell_index]->v * weight;
+				FVector2f dist = { cell_x.X - p->x.X + 0.5f, cell_x.Y - p->x.Y + 0.5f };
+				FVector2f weighted_velocity = m_pGrid[cell_index]->v * weight;
 
-				//APIC paper equation 10
-				auto term = FMatrix2x2(weighted_velocity.X * dist.X, weighted_velocity.Y * dist.X, weighted_velocity.X * dist.Y, weighted_velocity.Y * dist.Y);
-				B = term;
+				FMatrix2x2 term = { weighted_velocity.X * dist.X, weighted_velocity.Y * dist.Y, weighted_velocity.X * dist.X, weighted_velocity.Y * dist.Y };
+
+				float a, b, c, d = 0;
+				float a1, b1, c1, d1 = 0;
+				term.GetMatrix(a, b, c, d);
+				B.GetMatrix(a1, b1, c1, d1);
+				B = { a1 + a, b1 + b, c1 + c, d1 + d };
 
 				p->v += weighted_velocity;
 			}
 		}
-		float a, b, c, d;
+		float a, b, c, d = 0;
 		B.GetMatrix(a, b, c, d);
+		p->C = { a * 4, b * 4, c * 4, d * 4 };
 
-		//p.C = { a * 4, b * 4, c * 4, d * 4 };
-
-		//adverty particles
 		p->x += p->v * dt;
 
-		//safety clamp
-		p->x.X = FMath::Clamp(p->x.X, 1, grid_res-2);
+		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);
 		p->x.Y = FMath::Clamp(p->x.Y, 1, grid_res - 2);
 
-		particles[i] = p;
+
+		FMatrix2x2 Fp_new = { 1.f, 0.f, 0.f, 1.f };
+		float a1, b1, c1, d1 = 0;
+		Fp_new.GetMatrix(a1, b1, c1, d1);
+		p->C.GetMatrix(a, b, c, d);
+
+		Fp_new = { a1 + a * dt, b1 + b * dt, c1 + c * dt, d1 + d * dt };
+		Fs[i] = MultiplyMatrix(Fp_new, Fs[i]);
+
+		++i;
 	}
+}
+
+void AMPM2D::PipeLine()
+{
+	ClearGrid();
+	P2G();
+	UpdateGrid();
+	G2P();
+}
+
+void AMPM2D::UpdateInstancedMesh()
+{
+	TArray<FTransform> Transforms;
+
+	Transforms.Empty(NumParticles);
+
+	for (int i = 0; i < NumParticles; ++i)
+	{
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
+		Transforms.Add(tempValue);
+		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
+	}
+	InstancedStaticMeshComponent->MarkRenderStateDirty();
+}
+
+FMatrix2x2 AMPM2D::Transpose(FMatrix2x2 originMatrix)
+{
+	FMatrix2x2 resultMatrix;
+	float a, b, c, d = 0.f;
+	originMatrix.GetMatrix(a, b, c, d);
+	resultMatrix = { a,c,b,d };
+
+	return resultMatrix;
+}
+
+FMatrix2x2 AMPM2D::MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
+{
+	FMatrix2x2 resultMatrix;
+	float a1, b1, c1, d1, a2, b2, c2, d2 = 0.f;
+	m1.GetMatrix(a1, b1, c1, d1);
+	m2.GetMatrix(a2, b2, c2, d2);
+	resultMatrix = { a1 - a2,b1 - b2,c1 - c2,d1 - d2 };
+
+	return resultMatrix;
+}
+
+FMatrix2x2 AMPM2D::MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
+{
+	FMatrix2x2 resultMatrix;
+
+	float a1, b1, c1, d1 = 0;
+	float a2, b2, c2, d2 = 0;
+	m1.GetMatrix(a1, b1, c1, d1);
+	m2.GetMatrix(a2, b2, c2, d2);
+	//UE_LOG(LogTemp, Log, TEXT("Matrix1 result %f, %f, %f, %f"), a1, b1, c1, d1);
+	//UE_LOG(LogTemp, Log, TEXT("Matrix2 result %f, %f, %f, %f"), a2, b2, c2, d2);
+	
+	resultMatrix = { a1 * a2 + b1 * c2, a1 * b2 + b1 * d2, c1 * a2 + d1 * c2, c1 * b2 + d1 * d2 };
+	//resultMatrix.GetMatrix(a1, b1, c1, d1);
+	//UE_LOG(LogTemp, Log, TEXT("result Matrix result %f, %f, %f, %f"), a1, b1, c1, d1);
+
+	return resultMatrix;
 }
 
