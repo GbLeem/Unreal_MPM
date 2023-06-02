@@ -24,12 +24,24 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void ClearGrid();
 	void P2G();
 	void UpdateGrid();
 	void G2P();
 
 	void UpdateParticles();
 	void Simulate();
+
+public:
+	//for matrix calculation
+	FMatrix2x2 Transpose(FMatrix2x2 originMatrix);
+	FMatrix2x2 MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
+	FMatrix2x2 MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
+	FVector2f MultiplyMatrixAndFloat(FMatrix2x2 m1, FVector2f v1);
+
+public:
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 public:
 	struct Particle
@@ -46,29 +58,22 @@ public:
 		FVector2f v;
 		float mass; //일정하게 유지
 	};
-public:
-	//for 
-	FMatrix2x2 Transpose(FMatrix2x2 originMatrix);
-	FMatrix2x2 MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
-	FMatrix2x2 MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
-	FVector2f MultiplyMatrixAndFloat(FMatrix2x2 m1, FVector2f v1);
-
-public:
-	UPROPERTY(VisibleAnywhere)
-		UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 public:
 	int NumParticles;
 	const int grid_res = 64;
 	const int NumCells = grid_res * grid_res;
 
-	//const float dt = 0.2f;
-	const float dt = 0.1f;
+	//const float dt = 0.1f;
+	const float dt = 0.05f;
 	const float iterations = (int)(1.0f / dt);
-	const float gravity = -0.3f;
+	//const float gravity = -0.1f;
+	const float gravity = -0.6f;
 
 	float elastic_lambda = 10.f;
 	float elastic_mu = 20.f;
+	/*float elastic_lambda = 1.f;
+	float elastic_mu = 2.f;*/
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
