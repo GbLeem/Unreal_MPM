@@ -441,6 +441,10 @@ void AInteraction_MPM3D::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*for (int i = 0; i < iterations; ++i)
+	{
+		SimulatingPipeLine(timesteps);
+	}*/
 	SimulatingPipeLine(timesteps);
 	UpdateParticle();
 

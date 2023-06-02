@@ -63,8 +63,10 @@ public:
 public:
 
 	//simulation parameter
-	const float gravity = -0.03f;
+	const float gravity = -0.3f;
 	double timesteps = 1.0f; 
+	//double timesteps = 0.5f;
+	const float iterations = (int)(1.f / timesteps);
 
 	//grid data
 	const int grid_res = 20;
