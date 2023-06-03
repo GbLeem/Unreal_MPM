@@ -22,6 +22,8 @@ void AMPM2D_NeoHookean::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	TArray<FVector2f> TempPositions;
+
 	const float spacing = 0.5f;
 	//const float spacing = 1.f;
 	const int box_x = 32;
@@ -41,6 +43,7 @@ void AMPM2D_NeoHookean::BeginPlay()
 	NumParticles = TempPositions.Num();
 	m_pParticles.Empty(NumParticles);
 	Fs.Empty(NumParticles);
+	//weights.Empty(3);
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
@@ -49,7 +52,7 @@ void AMPM2D_NeoHookean::BeginPlay()
 		p->v = { 0.f,0.f };
 		p->C = { 0.f, 0.f, 0.f, 0.f };
 		p->mass = 1.f;
-		m_pParticles.Add(p); 
+		m_pParticles.Add(p);
 
 		Fs.Add(FMatrix2x2(1.f, 0.f, 0.f, 1.f));
 	}
@@ -79,6 +82,7 @@ void AMPM2D_NeoHookean::BeginPlay()
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2) });
 
 		float density = 0.f;
+
 		//iterate 3x3 cells
 		for (int gx = 0; gx < 3; ++gx)
 		{
@@ -113,7 +117,6 @@ void AMPM2D_NeoHookean::BeginPlay()
 	}
 }
 
-// Called every frame
 void AMPM2D_NeoHookean::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -129,10 +132,18 @@ void AMPM2D_NeoHookean::Tick(float DeltaTime)
 void AMPM2D_NeoHookean::ClearGrid()
 {
 	//reset grid
-	for (auto& c : m_pGrid)
+	/*for (auto& c : m_pGrid)
 	{
 		c->mass = 0;
 		c->v = { 0.f, 0.f };
+	}*/
+	for (int i = 0; i < NumCells; ++i)
+	{
+		Cell* cell = m_pGrid[i];
+		cell->mass = 0;
+		cell->v = { 0.f,0.f };
+
+		m_pGrid[i] = cell;
 	}
 }
 
@@ -140,8 +151,8 @@ void AMPM2D_NeoHookean::P2G()
 {
 	float a, b, c, d = 0;
 	float a1, b1, c1, d1 = 0;
-	weights.Empty(3); //[TODO] 어디에 둬야 할까?
 
+	weights.Empty(3); //[TODO] 어디에 둬야 할까?
 	for (int i = 0; i < NumParticles; ++i)
 	{
 		Particle* p = m_pParticles[i];
@@ -160,9 +171,9 @@ void AMPM2D_NeoHookean::P2G()
 		FMatrix2x2 F_T = Transpose(F);
 		FMatrix2x2 F_inv_T = F_T.Inverse();
 		FMatrix2x2 F_minus_F_inv_T = MinusMatrix(F, F_inv_T);
-		F_minus_F_inv_T.GetMatrix(a, b, c, d);
 
 		//mpm course eq.48
+		F_minus_F_inv_T.GetMatrix(a, b, c, d);
 		FMatrix2x2 P_term_0 = { elastic_mu * a, elastic_mu * b, elastic_mu * c, elastic_mu * d };
 
 		F_inv_T.GetMatrix(a1, b1, c1, d1);
@@ -176,12 +187,12 @@ void AMPM2D_NeoHookean::P2G()
 		//cauchy stress  =(1/det(F)) * p * F_T
 		FMatrix2x2 temp = MultiplyMatrix(P, F_T);
 		temp.GetMatrix(a, b, c, d);
-		stress = { (1.f / J) * a, (1.f / J) * b, (1.f / J) * c, (1.f / J) * d };;
+		stress = { (1.f / J) * a, (1.f / J) * b, (1.f / J) * c, (1.f / J) * d };
 
 		//Apic, mpm course p.42
 		//(M_p)^-1 = 4
 		stress.GetMatrix(a, b, c, d);
-		FMatrix2x2 eq_16_term_0 = { -volume * 4 * dt * a, -volume * 4 * dt * b, -volume * 4 * dt * c, -volume * 4 * dt * d };
+		FMatrix2x2 eq_16_term_0 = { -volume * 4 * a * dt, -volume * 4 * b * dt, -volume * 4 * c * dt, -volume * 4 * d * dt };
 
 		//quadratic interpolation
 		FIntVector2 cell_idx = FIntVector2(p->x.X, p->x.Y);
@@ -243,7 +254,7 @@ void AMPM2D_NeoHookean::UpdateGrid()
 		if (cell->mass > 0)
 		{
 			cell->v /= cell->mass;
-			cell->v += dt * FVector2f(0, gravity);
+			cell->v += FVector2f(0, gravity * dt);
 
 			int x = i / grid_res;
 			int y = i % grid_res;
@@ -286,11 +297,11 @@ void AMPM2D_NeoHookean::G2P()
 				FIntVector2 cell_x = FIntVector2(cell_idx.X + gx - 1, cell_idx.Y + gy - 1);
 				int cell_index = (int)cell_x.X * grid_res + (int)cell_x.Y;
 
-				FVector2f dist = { (cell_x.X - p->x.X) + 0.5f,(cell_x.Y - p->x.Y) + 0.5f };
+				FVector2f dist = { (cell_x.X - p->x.X) + 0.5f, (cell_x.Y - p->x.Y) + 0.5f };
 				FVector2f weighted_velocity = m_pGrid[cell_index]->v * weight;
 
 				//right calculation
-				FMatrix2x2 term = FMatrix2x2(weighted_velocity.X * dist.X, weighted_velocity.X * dist.Y, 
+				FMatrix2x2 term = FMatrix2x2(weighted_velocity.X * dist.X, weighted_velocity.X * dist.Y,
 					weighted_velocity.Y * dist.X, weighted_velocity.Y * dist.Y);
 
 				float a1, b1, c1, d1;

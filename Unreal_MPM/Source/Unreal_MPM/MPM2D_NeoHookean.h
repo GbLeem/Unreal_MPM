@@ -67,18 +67,19 @@ public:
 	//const float dt = 0.1f;
 	const float dt = 0.05f;
 	const float iterations = (int)(1.0f / dt);
-	//const float gravity = -0.1f;
-	const float gravity = -0.6f;
+	const float gravity = -0.3f;
+	//const float gravity = -0.6f;
 
-	float elastic_lambda = 10.f;
-	float elastic_mu = 20.f;
+	const float elastic_lambda = 10.f;
+	const float elastic_mu = 20.f;
 	/*float elastic_lambda = 1.f;
 	float elastic_mu = 2.f;*/
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
 	TArray<FMatrix2x2> Fs; //for deformation gradient
-	TArray<FVector2f> TempPositions;
+
+	//TArray<FVector2f> TempPositions;
 	TArray<FVector2f> weights;
 
 };
