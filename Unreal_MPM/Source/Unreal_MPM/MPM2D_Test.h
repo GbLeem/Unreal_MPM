@@ -25,6 +25,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void ClearGrid();
+	void P2G();
+	void UpdateGrid();
+	void G2P();
+
 	void Simulate();
 	void UpdateParticles();
 	FVector2f MultiplyMatrixAndFloat(FMatrix2x2 m1, FVector2f v1);

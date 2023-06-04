@@ -41,6 +41,9 @@ void AMPM2D_NeoHookean::BeginPlay()
 	}
 
 	NumParticles = TempPositions.Num();
+
+	//m_pParticles.SetNum(NumParticles);
+	//Fs.SetNum(NumParticles);
 	m_pParticles.Empty(NumParticles);
 	Fs.Empty(NumParticles);
 	//weights.Empty(3);
@@ -52,8 +55,8 @@ void AMPM2D_NeoHookean::BeginPlay()
 		p->v = { 0.f,0.f };
 		p->C = { 0.f, 0.f, 0.f, 0.f };
 		p->mass = 1.f;
-		m_pParticles.Add(p);
 
+		m_pParticles.Add(p);
 		Fs.Add(FMatrix2x2(1.f, 0.f, 0.f, 1.f));
 	}
 
@@ -110,7 +113,7 @@ void AMPM2D_NeoHookean::BeginPlay()
 
 		for (int i = 0; i < NumParticles; ++i)
 		{
-			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 150.f, 0));
+			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
 			Transforms.Add(tempValue);
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
@@ -119,27 +122,24 @@ void AMPM2D_NeoHookean::BeginPlay()
 
 void AMPM2D_NeoHookean::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	//Super::Tick(DeltaTime);
 
-	/*for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
-	}*/
-	Simulate();
+	}
+	//Simulate();
 	UpdateParticles();
 }
 
 void AMPM2D_NeoHookean::ClearGrid()
 {
 	//reset grid
-	/*for (auto& c : m_pGrid)
-	{
-		c->mass = 0;
-		c->v = { 0.f, 0.f };
-	}*/
+	
 	for (int i = 0; i < NumCells; ++i)
 	{
 		Cell* cell = m_pGrid[i];
+
 		cell->mass = 0;
 		cell->v = { 0.f,0.f };
 
@@ -149,8 +149,8 @@ void AMPM2D_NeoHookean::ClearGrid()
 
 void AMPM2D_NeoHookean::P2G()
 {
-	float a, b, c, d = 0;
-	float a1, b1, c1, d1 = 0;
+	/*float a, b, c, d = 0;
+	float a1, b1, c1, d1 = 0;*/
 
 	weights.Empty(3); //[TODO] 어디에 둬야 할까?
 	for (int i = 0; i < NumParticles; ++i)
@@ -173,26 +173,39 @@ void AMPM2D_NeoHookean::P2G()
 		FMatrix2x2 F_minus_F_inv_T = MinusMatrix(F, F_inv_T);
 
 		//mpm course eq.48
-		F_minus_F_inv_T.GetMatrix(a, b, c, d);
-		FMatrix2x2 P_term_0 = { elastic_mu * a, elastic_mu * b, elastic_mu * c, elastic_mu * d };
+		
+		//F_minus_F_inv_T.GetMatrix(a, b, c, d);
+		//FMatrix2x2 P_term_0 = { elastic_mu * a, elastic_mu * b, elastic_mu * c, elastic_mu * d };
+		//->
+		FMatrix2x2 P_term_0 = ScalingMatrix(F_minus_F_inv_T, elastic_mu);
 
-		F_inv_T.GetMatrix(a1, b1, c1, d1);
-		FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1, elastic_lambda * log(J) * d1 };
 
-		P_term_0.GetMatrix(a, b, c, d);
-		P_term_1.GetMatrix(a1, b1, c1, d1);
-		FMatrix2x2 P = { a + a1, b + b1, c + c1, d + d1 };
+		//F_inv_T.GetMatrix(a1, b1, c1, d1);
+		//FMatrix2x2 P_term_1 = { elastic_lambda * log(J) * a1, elastic_lambda * log(J) * b1, elastic_lambda * log(J) * c1, elastic_lambda * log(J) * d1 };
+		//->
+		FMatrix2x2 P_term_1 = ScalingMatrix(F_inv_T, log(J) * elastic_lambda);
+
+		//P_term_0.GetMatrix(a, b, c, d);
+		//P_term_1.GetMatrix(a1, b1, c1, d1);
+		//FMatrix2x2 P = { a + a1, b + b1, c + c1, d + d1 };
+		//->
+		FMatrix2x2 P = PlusMatrix(P_term_0, P_term_1);
+
 
 		//mpm course eq.38
 		//cauchy stress  =(1/det(F)) * p * F_T
 		FMatrix2x2 temp = MultiplyMatrix(P, F_T);
-		temp.GetMatrix(a, b, c, d);
-		stress = { (1.f / J) * a, (1.f / J) * b, (1.f / J) * c, (1.f / J) * d };
+		//temp.GetMatrix(a, b, c, d);
+		//stress = { (1.f / J) * a, (1.f / J) * b, (1.f / J) * c, (1.f / J) * d };
+		//->
+		stress = ScalingMatrix(temp, (1.f / J));
 
 		//Apic, mpm course p.42
 		//(M_p)^-1 = 4
-		stress.GetMatrix(a, b, c, d);
-		FMatrix2x2 eq_16_term_0 = { -volume * 4 * a * dt, -volume * 4 * b * dt, -volume * 4 * c * dt, -volume * 4 * d * dt };
+		//stress.GetMatrix(a, b, c, d);
+		//FMatrix2x2 eq_16_term_0 = { -volume * 4 * a * dt, -volume * 4 * b * dt, -volume * 4 * c * dt, -volume * 4 * d * dt };
+		//->
+		FMatrix2x2 eq_16_term_0 = ScalingMatrix(stress, -volume * 4 * dt);
 
 		//quadratic interpolation
 		FIntVector2 cell_idx = FIntVector2(p->x.X, p->x.Y);
@@ -231,6 +244,7 @@ void AMPM2D_NeoHookean::P2G()
 				//MLS paper eq.28 
 
 				//[FIX] 5/30 if calculate once, particles move stable but calculate each steps particle moving a lot
+				float a, b, c, d = 0;
 				eq_16_term_0.GetMatrix(a, b, c, d);
 				//eq_16_term_0 = { a * weight, b * weight, c * weight, d * weight };
 
@@ -254,7 +268,7 @@ void AMPM2D_NeoHookean::UpdateGrid()
 		if (cell->mass > 0)
 		{
 			cell->v /= cell->mass;
-			cell->v += FVector2f(0, gravity * dt);
+			cell->v += FVector2f(0, gravity * dt); 
 
 			int x = i / grid_res;
 			int y = i % grid_res;
@@ -294,7 +308,7 @@ void AMPM2D_NeoHookean::G2P()
 			{
 				float weight = weights[gx].X * weights[gy].Y;
 
-				FIntVector2 cell_x = FIntVector2(cell_idx.X + gx - 1, cell_idx.Y + gy - 1);
+				FIntVector2 cell_x = { cell_idx.X + gx - 1, cell_idx.Y + gy - 1 };
 				int cell_index = (int)cell_x.X * grid_res + (int)cell_x.Y;
 
 				FVector2f dist = { (cell_x.X - p->x.X) + 0.5f, (cell_x.Y - p->x.Y) + 0.5f };
@@ -304,18 +318,21 @@ void AMPM2D_NeoHookean::G2P()
 				FMatrix2x2 term = FMatrix2x2(weighted_velocity.X * dist.X, weighted_velocity.X * dist.Y,
 					weighted_velocity.Y * dist.X, weighted_velocity.Y * dist.Y);
 
-				float a1, b1, c1, d1;
+				/*float a1, b1, c1, d1;
 				float a2, b2, c2, d2;
 				B.GetMatrix(a1, b1, c1, d1);
 				term.GetMatrix(a2, b2, c2, d2);
 
-				B = { a1 + a2, b1 + b2, c1 + c2, d1 + d2 };
+				B = { a1 + a2, b1 + b2, c1 + c2, d1 + d2 };*/
+				B = PlusMatrix(B, term);
+
 				p->v += weighted_velocity;
 			}
 		}
-		float a, b, c, d;
+		/*float a, b, c, d;
 		B.GetMatrix(a, b, c, d);
-		p->C = { a * 4, b * 4, c * 4, d * 4 };
+		p->C = { a * 4, b * 4, c * 4, d * 4 };*/
+		p->C = ScalingMatrix(B, 2);
 
 		//advect particles
 		p->x += p->v * dt;
@@ -327,6 +344,7 @@ void AMPM2D_NeoHookean::G2P()
 		FMatrix2x2 Fp_new = { 1.f, 0.f, 0.f, 1.f };
 
 		float a1, b1, c1, d1;
+		float a, b, c, d;
 		Fp_new.GetMatrix(a1, b1, c1, d1);
 		p->C.GetMatrix(a, b, c, d);
 
@@ -345,7 +363,7 @@ void AMPM2D_NeoHookean::UpdateParticles()
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 150.f, 0));
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
 		Transforms.Add(tempValue);
 		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}
@@ -378,6 +396,17 @@ FMatrix2x2 AMPM2D_NeoHookean::MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
 	m1.GetMatrix(a1, b1, c1, d1);
 	m2.GetMatrix(a2, b2, c2, d2);
 	resultMatrix = { a1 - a2, b1 - b2, c1 - c2, d1 - d2 };
+
+	return resultMatrix;
+}
+
+FMatrix2x2 AMPM2D_NeoHookean::PlusMatrix(FMatrix2x2 m1, FMatrix2x2 m2)
+{
+	FMatrix2x2 resultMatrix;
+	float a1, b1, c1, d1, a2, b2, c2, d2 = 0.f;
+	m1.GetMatrix(a1, b1, c1, d1);
+	m2.GetMatrix(a2, b2, c2, d2);
+	resultMatrix = { a1 + a2, b1 + b2, c1 + c2, d1 + d2 };
 
 	return resultMatrix;
 }
