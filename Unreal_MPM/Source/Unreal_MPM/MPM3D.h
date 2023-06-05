@@ -87,7 +87,6 @@ public:
 	//simulation
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float dt = 1.0f;
-
 	const float iterations = static_cast<int>(1.f / dt);
 
 	const float gravity = -0.03f;
