@@ -41,8 +41,6 @@ public:
 	FMatrix2x2 MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
 	FVector2f MultiplyMatrixAndFloat(FMatrix2x2 m1, FVector2f v1);
 	
-	FMatrix2x2 TraceCalculation(FMatrix2x2 m1, float trace);
-
 	template<typename T>
 	FMatrix2x2 ScalingMatrix(FMatrix2x2 m1, T scale);
 
@@ -70,9 +68,9 @@ public:
 	const int grid_res = 64;
 	const int NumCells = grid_res * grid_res;
 
-	const float dt = 0.2f;
+	const float dt = 0.1f;
 	const float iterations = (int)(1.0f / dt);
-	const float gravity = -0.3f;
+	const float gravity = -0.5f;
 
 	//fluid parameter
 	const float rest_density = 4.f;

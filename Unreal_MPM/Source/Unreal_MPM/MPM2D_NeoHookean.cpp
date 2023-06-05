@@ -125,7 +125,7 @@ void AMPM2D_NeoHookean::Tick(float DeltaTime)
 {
 	//Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
 	}
@@ -150,7 +150,7 @@ void AMPM2D_NeoHookean::ClearGrid()
 
 void AMPM2D_NeoHookean::P2G()
 {
-	weights.Empty(3); 
+	//weights.Empty(3); 
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
@@ -190,7 +190,7 @@ void AMPM2D_NeoHookean::P2G()
 		//quadratic interpolation
 		FIntVector2 cell_idx = FIntVector2(p->x.X, p->x.Y);
 		FVector2f cell_diff = { p->x.X - cell_idx.X - 0.5f, p->x.Y - cell_idx.Y - 0.5f };
-
+		weights.Empty(3);
 		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2) });
 		weights.Add({ 0.75f - (float)pow(cell_diff.X, 2), 0.75f - (float)pow(cell_diff.Y, 2) });
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2) });
@@ -296,7 +296,7 @@ void AMPM2D_NeoHookean::G2P()
 				p->v += weighted_velocity;
 			}
 		}
-		p->C = ScalingMatrix(B, 2);
+		p->C = ScalingMatrix(B, 4);
 
 		//advect particles
 		p->x += p->v * dt;
