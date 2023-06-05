@@ -1,5 +1,4 @@
 
-
 #include "MPM2D_Fluid.h"
 
 AMPM2D_Fluid::AMPM2D_Fluid()
@@ -18,7 +17,6 @@ AMPM2D_Fluid::AMPM2D_Fluid()
 
 }
 
-// Called when the game starts or when spawned
 void AMPM2D_Fluid::BeginPlay()
 {
 	Super::BeginPlay();
@@ -88,11 +86,11 @@ void AMPM2D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 5; ++i)
+	/*for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
-	}
-	//Simulate();
+	}*/
+	Simulate();
 	UpdateParticles();
 }
 
@@ -288,7 +286,7 @@ void AMPM2D_Fluid::G2P()
 				p->v += weighted_velocity;
 			}
 		}
-		p->C = ScalingMatrix(B, 4);
+		p->C = ScalingMatrix(B, 2);
 
 		//advect particles
 		p->x += p->v * dt;

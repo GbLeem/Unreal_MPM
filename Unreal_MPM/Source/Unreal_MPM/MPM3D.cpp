@@ -125,11 +125,8 @@ void AMPM3D::SimulatingPipeLine(double timestep)
 {
 	ClearGrid();
 	P2GFirst();
-	//P2GSecond(timestep);
-	//P2GMLS(timestep);
 	UpdateGrid(timestep);
 	G2P(timestep);
-	//G2PMLS(timestep);
 }
 
 void AMPM3D::ClearGrid()

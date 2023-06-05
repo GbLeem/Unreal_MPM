@@ -54,8 +54,8 @@ void AMPM2D_NeoHookean::BeginPlay()
 		p->x = TempPositions[i];
 		p->v = { 0.f,0.f };
 		p->C = { 0.f, 0.f, 0.f, 0.f };
-		//p->mass = 1.f;
-		p->mass = 0.7f;
+		//p->mass = 2.f;
+		p->mass = 1.f;
 
 		m_pParticles.Add(p);
 		Fs.Add(FMatrix2x2(1.f, 0.f, 0.f, 1.f));
@@ -125,7 +125,7 @@ void AMPM2D_NeoHookean::Tick(float DeltaTime)
 {
 	//Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
 		Simulate();
 	}
@@ -185,7 +185,7 @@ void AMPM2D_NeoHookean::P2G()
 
 		//Apic, mpm course p.42
 		//(M_p)^-1 = 4
-		FMatrix2x2 eq_16_term_0 = ScalingMatrix(stress, -volume * 4 * dt);
+		FMatrix2x2 eq_16_term_0 = ScalingMatrix(stress, -volume * 2 * dt);
 
 		//quadratic interpolation
 		FIntVector2 cell_idx = FIntVector2(p->x.X, p->x.Y);

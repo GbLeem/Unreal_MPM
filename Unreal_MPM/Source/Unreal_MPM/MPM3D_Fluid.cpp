@@ -261,13 +261,9 @@ void AMPM3D_Fluid::UpdateGrid()
 
 		if (c->mass > 0)
 		{
-			//calculate grid velocity based on P2G's momentum (Cell->Velocity = momentum)
-			//convert momentum to velocity, apply gravity
+			c->v /= c->mass; 
+			c->v += dt * FVector3f(0, gravity, 0);
 
-			c->v /= c->mass; //make real velocity -> mass*velocity = momentum
-			c->v += dt * FVector3f(0, gravity, 0); //[TODO] why y axis gravity?
-
-			//boundary conditions
 			int x = i / (grid_res * grid_res);
 			int y = (i % (grid_res * grid_res)) / grid_res;
 			int z = i % grid_res;
