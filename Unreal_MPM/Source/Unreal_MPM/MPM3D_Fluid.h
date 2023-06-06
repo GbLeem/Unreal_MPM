@@ -35,9 +35,14 @@ public:
 
 public:
 	FVector3f MultiplyMatrixAndVector(FMatrix m, FVector3f v);
-	FMatrix ScalingMatrix(FMatrix m, float scale);
+
+	template<typename T>
+	FMatrix ScalingMatrix(FMatrix m, T scale);
+
 	FMatrix ResetMatrix(FMatrix m);
 	FVector3f Eq_16_Calculation(FMatrix eq_16_term, float weight, FVector3f cell_dist);
+	FMatrix PlusMatrix(FMatrix m1, FMatrix m2);
+	FMatrix MakeMatrixTerm(FVector3f v1, FVector3f v2);
 
 public:
 	struct Cell
@@ -63,7 +68,7 @@ public:
 	const int grid_res = 32;
 	const int NumCells = grid_res * grid_res * grid_res;
 
-	const float dt = 0.05f;
+	const float dt = 0.02f;
 	const float iterations = (int)(1.f / dt);
 
 	const float gravity = -0.3f;
@@ -78,3 +83,22 @@ public:
 
 	TArray<FVector3f> weights;
 };
+
+
+template<typename T>
+inline FMatrix AMPM3D_Fluid::ScalingMatrix(FMatrix m, T scale)
+{
+	m.M[0][0] *= scale;
+	m.M[0][1] *= scale;
+	m.M[0][2] *= scale;
+	
+	m.M[1][0] *= scale;
+	m.M[1][1] *= scale;
+	m.M[1][2] *= scale;
+	
+	m.M[2][0] *= scale;
+	m.M[2][1] *= scale;
+	m.M[2][2] *= scale;
+	
+	return m;	
+}

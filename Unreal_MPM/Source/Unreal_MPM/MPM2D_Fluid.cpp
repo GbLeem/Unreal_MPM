@@ -108,7 +108,6 @@ void AMPM2D_Fluid::ClearGrid()
 
 void AMPM2D_Fluid::P2G_1()
 {
-
 	for (int i = 0; i < NumParticles; ++i)
 	{
 		Particle* p = m_pParticles[i];
