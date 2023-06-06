@@ -70,13 +70,11 @@ public:
 	const int NumCells = grid_res * grid_res;
 
 	const float dt = 0.1f;
-	//const float dt = 0.07f;
 	const float iterations = (int)(1.0f / dt);
 	const float gravity = -0.3f;
-	//const float gravity = -0.6f;
 
-	const float elastic_lambda = 10.f;
-	const float elastic_mu = 20.f;
+	const float elastic_lambda = 15.f;
+	const float elastic_mu = 25.f;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;

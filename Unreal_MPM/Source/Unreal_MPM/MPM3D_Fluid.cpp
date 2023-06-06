@@ -24,7 +24,7 @@ void AMPM3D_Fluid::BeginPlay()
 
 	TArray<FVector3f> TempPositions;
 
-	const float spacing = 0.5f;
+	const float spacing = 1.f;
 	const int box_x = 16;
 	const int box_y = 16;
 	const int box_z = 16;
@@ -45,13 +45,12 @@ void AMPM3D_Fluid::BeginPlay()
 	}
 
 	//round number of particles
-	/*int po2_amnt = 1;
+	int po2_amnt = 1;
 	while (po2_amnt <= TempPositions.Num())
 		po2_amnt <<= 1;
-	NumParticles = po2_amnt >> 1;*/
+	NumParticles = po2_amnt >> 1;
 
 	//create particles
-	NumParticles = TempPositions.Num();
 	m_pParticles.Empty(NumParticles); //make particle array
 
 	for (int i = 0; i < NumParticles; ++i)
@@ -70,7 +69,6 @@ void AMPM3D_Fluid::BeginPlay()
 	{
 		Cell* TempCell = new Cell();
 		TempCell->v = { 0.f, 0.f, 0.f };
-		TempCell->mass = 0;
 
 		m_pGrid.Add(TempCell);
 	}
@@ -83,7 +81,7 @@ void AMPM3D_Fluid::BeginPlay()
 
 		for (int i = 0; i < NumParticles; ++i)
 		{
-			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, m_pParticles[i]->x.Z * 100.f));
+			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 100.f, m_pParticles[i]->x.Z * 100.f));
 			Transforms.Add(tempValue);
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
@@ -107,15 +105,12 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*for (int i = 0; i < 5; ++i)
+	/*for (int i = 0; i < 2; ++i)
 	{
 		Simulate();
 	}*/
 	Simulate();
-	/*for (int i = 0; i < 5; ++i)
-	{
-		UpdateParticles();
-	}*/
+
 	UpdateParticles();
 }
 
@@ -133,15 +128,14 @@ void AMPM3D_Fluid::ClearGrid()
 
 void AMPM3D_Fluid::P2G_1()
 {
-	weights.Empty(3);
-	
 	for (int i = 0; i < NumParticles; ++i)
 	{
 		Particle* p = m_pParticles[i];
 
 		FIntVector cell_idx = { (int)p->x.X, (int)p->x.Y, (int)p->x.Z };
-		FVector3f cell_diff = { (float)(p->x.X - cell_idx.X - 0.5f), (float)(p->x.Y - cell_idx.Y - 0.5f), (float)(p->x.Z - cell_idx.Z - 0.5f) };
-
+		FVector3f cell_diff = {(p->x.X - cell_idx.X - 0.5f), (p->x.Y - cell_idx.Y - 0.5f), (p->x.Z - cell_idx.Z - 0.5f) };
+		
+		weights.Empty(3);
 		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2),0.5f * (float)pow(0.5f - cell_diff.Z, 2) });
 		weights.Add({ 0.75f - (float)pow(cell_diff.X, 2), 0.75f - (float)pow(cell_diff.Y, 2), 0.75f -(float)pow(cell_diff.Z, 2) });
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2), 0.5f * (float)pow(0.5f + cell_diff.Z, 2) });
@@ -178,14 +172,14 @@ void AMPM3D_Fluid::P2G_1()
 
 void AMPM3D_Fluid::P2G_2()
 {
-	weights.Empty(3);
-
 	for (int i = 0; i < NumParticles; ++i)
 	{
 		Particle* p = m_pParticles[i];
 
 		FIntVector cell_idx = {(int)p->x.X, (int)p->x.Y, (int)p->x.Z };
-		FVector3f cell_diff = { (float)(p->x.X - cell_idx.X - 0.5f), (float)(p->x.Y - cell_idx.Y - 0.5f), (float)(p->x.Z - cell_idx.Z - 0.5f) };
+		FVector3f cell_diff = { (p->x.X - cell_idx.X - 0.5f), (p->x.Y - cell_idx.Y - 0.5f), (p->x.Z - cell_idx.Z - 0.5f) };
+		
+		weights.Empty(3);
 		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2),0.5f * (float)pow(0.5f - cell_diff.Z, 2) });
 		weights.Add({ 0.75f - (float)pow(cell_diff.X, 2), 0.75f - (float)pow(cell_diff.Y, 2), 0.75f - (float)pow(cell_diff.Z, 2) });
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2), 0.5f * (float)pow(0.5f + cell_diff.Z, 2) });
@@ -207,9 +201,11 @@ void AMPM3D_Fluid::P2G_2()
 
 		float volume = p->mass / density;
 
-		float pressure = FMath::Max(-0.1f, eos_stiffness * (pow(density / rest_density, eos_power) - 1));
+		float pressure = FMath::Max(-0.1f, eos_stiffness * (pow((density / rest_density), eos_power) - 1));
 
 		FMatrix stress;
+		stress = ResetMatrix(stress);
+
 		stress.M[0][0] = -pressure;
 		stress.M[1][1] = -pressure;
 		stress.M[2][2] = -pressure;
@@ -239,8 +235,8 @@ void AMPM3D_Fluid::P2G_2()
 					int cell_index = (int)cell_x.X * grid_res * grid_res + (int)cell_x.Y * grid_res + (int)cell_x.Z;
 					Cell* cell = m_pGrid[cell_index];
 
-					eq_16_term_0 = ScalingMatrix(eq_16_term_0, weight);
-					FVector3f momentum = MultiplyMatrixAndVector(eq_16_term_0, cell_dist);
+					FVector3f momentum = Eq_16_Calculation(eq_16_term_0, weight, cell_dist);
+
 					cell->v += momentum;
 
 					m_pGrid[cell_index] = cell;
@@ -252,9 +248,6 @@ void AMPM3D_Fluid::P2G_2()
 
 void AMPM3D_Fluid::UpdateGrid()
 {
-	//calculate grid velocities
-	int gridIndex = 0;
-
 	for (int i = 0; i < NumCells; ++i)
 	{
 		Cell* c = m_pGrid[i];
@@ -295,13 +288,16 @@ void AMPM3D_Fluid::G2P()
 		p->v = { 0.f,0.f,0.f };
 
 		FIntVector cell_idx = { (int)p->x.X, (int)p->x.Y, (int)p->x.Z };
-		FVector3f cell_diff = { (float)p->x.X - cell_idx.X - 0.5f, (float)p->x.Y - cell_idx.Y - 0.5f, (float)p->x.Z - cell_idx.Z - 0.5f };
+		FVector3f cell_diff = { p->x.X - cell_idx.X - 0.5f, p->x.Y - cell_idx.Y - 0.5f, p->x.Z - cell_idx.Z - 0.5f };
 
+		weights.Empty(3);
 		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2),0.5f * (float)pow(0.5f - cell_diff.Z, 2) });
 		weights.Add({ 0.75f - (float)pow(cell_diff.X, 2), 0.75f - (float)pow(cell_diff.Y, 2), 0.75f - (float)pow(cell_diff.Z, 2) });
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2), 0.5f * (float)pow(0.5f + cell_diff.Z, 2) });
 
 		FMatrix B;
+		//B = ResetMatrix(B);
+
 		for (int gx = 0; gx < 3; ++gx)
 		{
 			for (int gy = 0; gy < 3; ++gy)
@@ -317,14 +313,19 @@ void AMPM3D_Fluid::G2P()
 					FVector3f weighted_velocity = m_pGrid[cell_index]->v * weight;
 
 					FMatrix term;
+					//term = ResetMatrix(term);
+
+					//column 0
 					term.M[0][0] = (weighted_velocity.X * dist.X);
 					term.M[1][0] = (weighted_velocity.Y * dist.X);
 					term.M[2][0] = (weighted_velocity.Z * dist.X);
 
+					//column 1
 					term.M[0][1] = (weighted_velocity.X * dist.Y);
 					term.M[1][1] = (weighted_velocity.Y * dist.Y);
 					term.M[2][1] = (weighted_velocity.Z * dist.Y);
 
+					//column 2
 					term.M[0][2] = (weighted_velocity.X * dist.Z);
 					term.M[1][2] = (weighted_velocity.Y * dist.Z);
 					term.M[2][2] = (weighted_velocity.Z * dist.Z);
@@ -427,5 +428,12 @@ FMatrix AMPM3D_Fluid::ResetMatrix(FMatrix m)
 		}
 	}
 	return m;
+}
+
+FVector3f AMPM3D_Fluid::Eq_16_Calculation(FMatrix eq_16_term, float weight, FVector3f cell_dist)
+{
+	eq_16_term = ScalingMatrix(eq_16_term, weight);
+	MultiplyMatrixAndVector(eq_16_term, cell_dist);
+	return FVector3f();
 }
 

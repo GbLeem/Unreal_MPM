@@ -37,6 +37,8 @@ public:
 	FVector3f MultiplyMatrixAndVector(FMatrix m, FVector3f v);
 	FMatrix ScalingMatrix(FMatrix m, float scale);
 	FMatrix ResetMatrix(FMatrix m);
+	FVector3f Eq_16_Calculation(FMatrix eq_16_term, float weight, FVector3f cell_dist);
+
 public:
 	struct Cell
 	{
@@ -61,8 +63,7 @@ public:
 	const int grid_res = 32;
 	const int NumCells = grid_res * grid_res * grid_res;
 
-	//const float dt = 0.02f;
-	const float dt = 0.2f;
+	const float dt = 0.05f;
 	const float iterations = (int)(1.f / dt);
 
 	const float gravity = -0.3f;

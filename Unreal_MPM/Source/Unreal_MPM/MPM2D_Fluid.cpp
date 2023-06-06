@@ -74,7 +74,7 @@ void AMPM2D_Fluid::BeginPlay()
 
 		for (int i = 0; i < NumParticles; ++i)
 		{
-			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
+			FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 150.f, 0));
 			Transforms.Add(tempValue);
 		}
 		InstancedStaticMeshComponent->AddInstances(Transforms, false);
@@ -90,7 +90,6 @@ void AMPM2D_Fluid::Tick(float DeltaTime)
 	{
 		Simulate();
 	}
-	//Simulate();
 	UpdateParticles();
 }
 
@@ -321,7 +320,7 @@ void AMPM2D_Fluid::UpdateParticles()
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, 0));
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 150.f, 0));
 		Transforms.Add(tempValue);
 		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}
