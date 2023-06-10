@@ -2030,3 +2030,379 @@ Script Stack (0 frames):
 [2023.06.10-16.48.43:572][803]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
 [2023.06.10-16.48.43:581][803]LogUObjectHash: Compacting FUObjectHashTables data took   1.84ms
 [2023.06.10-16.48.43:688][806]LogPlayLevel: Display: Destroying online subsystem :Context_23
+[2023.06.10-16.49.28:201][ 24]Candidate modules for hot reload:
+[2023.06.10-16.49.28:201][ 24]  Unreal_MPM
+[2023.06.10-16.49.28:207][ 24]Launching UnrealBuildTool... [E:/PROGRAM/UE_5.0/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe  -ModuleWithSuffix=Unreal_MPM,0488 Unreal_MPMEditor Win64 Development -Project="E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject" "E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject"  -IgnoreJunk]
+[2023.06.10-16.49.28:217][ 24]Warning: Starting HotReload took  0.0s.
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: New page: Compilation - 2023. 6. 11. 오전 10:49:32
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Log file: C:\Users\user\AppData\Local\UnrealBuildTool\Log.txt
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git).
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Building Unreal_MPMEditor...
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Using Visual Studio 2022 14.34.31937 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933) and Windows 10.0.22000.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: [Adaptive Build] Excluded from Unreal_MPM unity file: MPM3D_Fluid.cpp, MPM3D_NeoHookean.cpp
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Determining max actions to execute in parallel (6 physical cores, 12 logical cores)
+[2023.06.10-16.49.32:626][157]CompilerResultsLog:   Executing up to 6 processes, one per physical core
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: Building 4 actions with 4 processes...
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: [1/4] Compile MPM3D_NeoHookean.cpp
+[2023.06.10-16.49.32:626][157]CompilerResultsLog: [2/4] Link UnrealEditor-Unreal_MPM-0488.lib
+[2023.06.10-16.49.32:626][157]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-0488.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-0488.exp
+[2023.06.10-16.49.32:627][157]CompilerResultsLog: [3/4] Link UnrealEditor-Unreal_MPM-0488.dll
+[2023.06.10-16.49.32:627][157]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-0488.suppressed.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-0488.suppressed.exp
+[2023.06.10-16.49.32:627][157]CompilerResultsLog: [4/4] WriteMetadata Unreal_MPMEditor.target
+[2023.06.10-16.49.32:627][157]CompilerResultsLog: Total time in Parallel executor: 2.92 seconds
+[2023.06.10-16.49.32:627][157]CompilerResultsLog: Total execution time: 4.27 seconds
+[2023.06.10-16.49.32:627][157]LogMainFrame: MainFrame: Module compiling took 4.437 seconds
+[2023.06.10-16.49.33:216][157]Display: HotReload took  5.0s.
+[2023.06.10-16.49.33:216][157]Display: Reload/Re-instancing Complete: 1 package changed, 13 classes unchanged, 1 enum unchanged, 6 functions remapped
+[2023.06.10-16.49.34:844][197]LogDebuggerCommands: Repeating last play command: Selected Viewport
+[2023.06.10-16.49.34:850][197]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2023.06.10-16.49.34:850][197]PIE: New page: PIE session: 2D_MPM_map (2023. 6. 11. 오전 10:49:34)
+[2023.06.10-16.49.34:851][197]LogPlayLevel: Creating play world package: /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.49.34:852][197]LogPlayLevel: PIE: StaticDuplicateObject took: (0.001614s)
+[2023.06.10-16.49.34:852][197]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/MY/Map/2D_MPM_map.2D_MPM_map to /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map (0.001700s)
+[2023.06.10-16.49.34:852][197]LogSubsystemCollection: Failed to initialize subsystem dependency (WorldPartitionSubsystem)
+[2023.06.10-16.49.34:852][197]LogChaos: FPhysicsSolverBase::AsyncDt:-1.000000
+[2023.06.10-16.49.34:853][197]LogAIModule: Creating AISystem for world 2D_MPM_map
+[2023.06.10-16.49.34:853][197]LogPlayLevel: PIE: World Init took: (0.000844s)
+[2023.06.10-16.49.34:924][197]LogUObjectHash: Compacting FUObjectHashTables data took   2.04ms
+[2023.06.10-16.49.34:925][197]LogAudio: Display: Creating Audio Device:                 Id: 20, Scope: Unique, Realtime: True
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Max Channels (voices):				  0
+[2023.06.10-16.49.34:925][197]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2023.06.10-16.49.34:925][197]LogAudio: Display: AudioDevice MaxSources: 32
+[2023.06.10-16.49.34:926][197]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2023.06.10-16.49.34:926][197]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2023.06.10-16.49.34:926][197]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2023.06.10-16.49.34:928][197]LogAudioMixer: Display: Initializing audio mixer using platform API: 'XAudio2'
+[2023.06.10-16.49.35:034][197]LogAudioMixer: Display: Using Audio Hardware Device 스피커(Realtek(R) Audio)
+[2023.06.10-16.49.35:034][197]LogAudioMixer: Display: Initializing Sound Submixes...
+[2023.06.10-16.49.35:034][197]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2023.06.10-16.49.35:034][197]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2023.06.10-16.49.35:036][197]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called. InstanceID=20
+[2023.06.10-16.49.35:036][197]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=20
+[2023.06.10-16.49.35:038][197]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=20
+[2023.06.10-16.49.35:038][197]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time. InstanceID=20
+[2023.06.10-16.49.35:038][197]LogInit: FAudioDevice initialized.
+[2023.06.10-16.49.35:038][197]LogAudio: Display: Audio Device (ID: 20) registered with world '2D_MPM_map'.
+[2023.06.10-16.49.35:049][197]LogLoad: Game class is 'GameModeBase'
+[2023.06.10-16.49.35:049][197]LogWorld: Bringing World /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map up for play (max tick rate 0) at 2023.06.11-01.49.35
+[2023.06.10-16.49.35:049][197]LogWorld: Bringing up level for play took: 0.000423
+[2023.06.10-16.49.35:051][197]LogOnline: OSS: Created online subsystem instance for: :Context_24
+[2023.06.10-16.49.35:053][197]PIE: Server logged in
+[2023.06.10-16.49.35:054][197]PIE: Play in editor total start time 0.204 seconds.
+[2023.06.10-16.49.39:455][327]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.49.39:455][327]LogWorld: BeginTearingDown for /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.49.39:455][327]LogWorld: UWorld::CleanupWorld for 2D_MPM_map, bSessionEnded=true, bCleanupResources=true
+[2023.06.10-16.49.39:455][327]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.49.39:464][327]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2023.06.10-16.49.39:470][327]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.49.39:498][327]LogAudio: Display: Audio Device unregistered from world 'None'.
+[2023.06.10-16.49.39:498][327]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=20
+[2023.06.10-16.49.39:500][327]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=20
+[2023.06.10-16.49.39:504][327]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.49.39:534][327]LogUObjectHash: Compacting FUObjectHashTables data took   1.95ms
+[2023.06.10-16.49.39:652][330]LogPlayLevel: Display: Destroying online subsystem :Context_24
+[2023.06.10-16.49.59:526][876]Candidate modules for hot reload:
+[2023.06.10-16.49.59:526][876]  Unreal_MPM
+[2023.06.10-16.49.59:534][876]Launching UnrealBuildTool... [E:/PROGRAM/UE_5.0/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe  -ModuleWithSuffix=Unreal_MPM,2744 Unreal_MPMEditor Win64 Development -Project="E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject" "E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject"  -IgnoreJunk]
+[2023.06.10-16.49.59:545][876]Warning: Starting HotReload took  0.1s.
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: New page: Compilation - 2023. 6. 11. 오전 10:50:03
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Log file: C:\Users\user\AppData\Local\UnrealBuildTool\Log.txt
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git).
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Building Unreal_MPMEditor...
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Using Visual Studio 2022 14.34.31937 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933) and Windows 10.0.22000.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: [Adaptive Build] Excluded from Unreal_MPM unity file: MPM3D_Fluid.cpp, MPM3D_NeoHookean.cpp
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Determining max actions to execute in parallel (6 physical cores, 12 logical cores)
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog:   Executing up to 6 processes, one per physical core
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Building 4 actions with 4 processes...
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: [1/4] Compile MPM3D_NeoHookean.cpp
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: [2/4] Link UnrealEditor-Unreal_MPM-2744.lib
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2744.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2744.exp
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: [3/4] Link UnrealEditor-Unreal_MPM-2744.dll
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2744.suppressed.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2744.suppressed.exp
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: [4/4] WriteMetadata Unreal_MPMEditor.target
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Total time in Parallel executor: 2.98 seconds
+[2023.06.10-16.50.03:980][ 10]CompilerResultsLog: Total execution time: 4.31 seconds
+[2023.06.10-16.50.03:980][ 10]LogMainFrame: MainFrame: Module compiling took 4.466 seconds
+[2023.06.10-16.50.04:528][ 10]Display: HotReload took  5.0s.
+[2023.06.10-16.50.04:528][ 10]Display: Reload/Re-instancing Complete: 1 package changed, 13 classes unchanged, 1 enum unchanged, 6 functions remapped
+[2023.06.10-16.50.05:834][ 41]LogDebuggerCommands: Repeating last play command: Selected Viewport
+[2023.06.10-16.50.05:841][ 41]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2023.06.10-16.50.05:842][ 41]PIE: New page: PIE session: 2D_MPM_map (2023. 6. 11. 오전 10:50:05)
+[2023.06.10-16.50.05:842][ 41]LogPlayLevel: Creating play world package: /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.50.05:843][ 41]LogPlayLevel: PIE: StaticDuplicateObject took: (0.001658s)
+[2023.06.10-16.50.05:843][ 41]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/MY/Map/2D_MPM_map.2D_MPM_map to /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map (0.001728s)
+[2023.06.10-16.50.05:843][ 41]LogSubsystemCollection: Failed to initialize subsystem dependency (WorldPartitionSubsystem)
+[2023.06.10-16.50.05:843][ 41]LogChaos: FPhysicsSolverBase::AsyncDt:-1.000000
+[2023.06.10-16.50.05:844][ 41]LogAIModule: Creating AISystem for world 2D_MPM_map
+[2023.06.10-16.50.05:844][ 41]LogPlayLevel: PIE: World Init took: (0.000693s)
+[2023.06.10-16.50.05:910][ 41]LogUObjectHash: Compacting FUObjectHashTables data took   2.15ms
+[2023.06.10-16.50.05:913][ 41]LogAudio: Display: Creating Audio Device:                 Id: 21, Scope: Unique, Realtime: True
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Max Channels (voices):				  0
+[2023.06.10-16.50.05:913][ 41]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2023.06.10-16.50.05:913][ 41]LogAudio: Display: AudioDevice MaxSources: 32
+[2023.06.10-16.50.05:914][ 41]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2023.06.10-16.50.05:914][ 41]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2023.06.10-16.50.05:914][ 41]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2023.06.10-16.50.05:916][ 41]LogAudioMixer: Display: Initializing audio mixer using platform API: 'XAudio2'
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: Display: Using Audio Hardware Device 스피커(Realtek(R) Audio)
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: Display: Initializing Sound Submixes...
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called. InstanceID=21
+[2023.06.10-16.50.06:027][ 41]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=21
+[2023.06.10-16.50.06:029][ 41]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=21
+[2023.06.10-16.50.06:029][ 41]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time. InstanceID=21
+[2023.06.10-16.50.06:029][ 41]LogInit: FAudioDevice initialized.
+[2023.06.10-16.50.06:029][ 41]LogAudio: Display: Audio Device (ID: 21) registered with world '2D_MPM_map'.
+[2023.06.10-16.50.06:040][ 41]LogLoad: Game class is 'GameModeBase'
+[2023.06.10-16.50.06:040][ 41]LogWorld: Bringing World /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map up for play (max tick rate 0) at 2023.06.11-01.50.06
+[2023.06.10-16.50.06:040][ 41]LogWorld: Bringing up level for play took: 0.000429
+[2023.06.10-16.50.06:042][ 41]LogOnline: OSS: Created online subsystem instance for: :Context_25
+[2023.06.10-16.50.06:047][ 41]PIE: Server logged in
+[2023.06.10-16.50.06:048][ 41]PIE: Play in editor total start time 0.207 seconds.
+[2023.06.10-16.50.19:594][445]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.50.19:594][445]LogWorld: BeginTearingDown for /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.50.19:595][445]LogWorld: UWorld::CleanupWorld for 2D_MPM_map, bSessionEnded=true, bCleanupResources=true
+[2023.06.10-16.50.19:595][445]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.50.19:609][445]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2023.06.10-16.50.19:614][445]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.50.19:641][445]LogAudio: Display: Audio Device unregistered from world 'None'.
+[2023.06.10-16.50.19:642][445]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=21
+[2023.06.10-16.50.19:643][445]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=21
+[2023.06.10-16.50.19:648][445]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.50.19:650][445]LogUObjectHash: Compacting FUObjectHashTables data took   1.61ms
+[2023.06.10-16.50.19:756][448]LogPlayLevel: Display: Destroying online subsystem :Context_25
+[2023.06.10-16.52.21:511][802]LogHttp: Warning: 000005D036E42300: invalid HTTP response code received. URL: https://datarouter.ol.epicgames.com/datarouter/api/v1/public/data?SessionID=%7BC0DBD378-4E1C-B9D0-C03D-83A190E58406%7D&AppID=UEEditor.Rocket.Release&AppVersion=5.0.3-20979098%2B%2B%2BUE5%2BRelease-5.0&UserID=1cb499cc482df829a26e30a8907c8129%7C06423cd6c1a54dfc814aba51fb5bb97e%7C2be57a23-c1a4-426e-9fda-c33241d120e1&AppEnvironment=datacollector-binary&UploadType=eteventstream, HTTP code: 0, content length: 0, actual payload size: 0
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: request failed, libcurl error: 0 (No error)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 0 (Found bundle for host datarouter.ol.epicgames.com: 0x5cffa8d0000 [can pipeline])
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 1 (Re-using existing connection! (#0) with host datarouter.ol.epicgames.com)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 2 (Connected to datarouter.ol.epicgames.com (54.197.224.21) port 443 (#0))
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 3 (We are completely uploaded and fine)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 4 (TLSv1.2 (IN), TLS alert, Client hello (1):)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 5 (Connection died, retrying a fresh connect)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 6 (necessary data rewind wasn't possible)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 7 (Closing connection 0)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: 000005D036E42300: libcurl info message cache 8 (TLSv1.2 (OUT), TLS alert, Client hello (1):)
+[2023.06.10-16.52.21:512][802]LogHttp: Warning: Retry exhausted on https://datarouter.ol.epicgames.com/datarouter/api/v1/public/data?SessionID=%7BC0DBD378-4E1C-B9D0-C03D-83A190E58406%7D&AppID=UEEditor.Rocket.Release&AppVersion=5.0.3-20979098%2B%2B%2BUE5%2BRelease-5.0&UserID=1cb499cc482df829a26e30a8907c8129%7C06423cd6c1a54dfc814aba51fb5bb97e%7C2be57a23-c1a4-426e-9fda-c33241d120e1&AppEnvironment=datacollector-binary&UploadType=eteventstream
+[2023.06.10-16.56.23:934][594]Candidate modules for hot reload:
+[2023.06.10-16.56.23:934][594]  Unreal_MPM
+[2023.06.10-16.56.23:940][594]Launching UnrealBuildTool... [E:/PROGRAM/UE_5.0/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe  -ModuleWithSuffix=Unreal_MPM,2967 Unreal_MPMEditor Win64 Development -Project="E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject" "E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject"  -IgnoreJunk]
+[2023.06.10-16.56.23:950][594]Warning: Starting HotReload took  0.0s.
+[2023.06.10-16.56.31:417][819]CompilerResultsLog: New page: Compilation - 2023. 6. 11. 오전 10:56:31
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Log file: C:\Users\user\AppData\Local\UnrealBuildTool\Log.txt
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git).
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Invalidating makefile for Unreal_MPMEditor (working set of source files changed)
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Parsing headers for Unreal_MPMEditor
+[2023.06.10-16.56.31:418][819]CompilerResultsLog:   Running UnrealHeaderTool "E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Unreal_MPM.uproject" "E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\Unreal_MPMEditor\Development\Unreal_MPMEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\user\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Reflection code generated for Unreal_MPMEditor in 2.4154777 seconds
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Building Unreal_MPMEditor...
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Using Visual Studio 2022 14.34.31937 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933) and Windows 10.0.22000.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [Adaptive Build] Excluded from Unreal_MPM unity file: MPM3D_NeoHookean.cpp
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Determining max actions to execute in parallel (6 physical cores, 12 logical cores)
+[2023.06.10-16.56.31:418][819]CompilerResultsLog:   Executing up to 6 processes, one per physical core
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Building 5 actions with 5 processes...
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [1/5] Compile MPM3D_NeoHookean.gen.cpp
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [2/5] Compile MPM3D_NeoHookean.cpp
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [3/5] Link UnrealEditor-Unreal_MPM-2967.lib
+[2023.06.10-16.56.31:418][819]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2967.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2967.exp
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [4/5] Link UnrealEditor-Unreal_MPM-2967.dll
+[2023.06.10-16.56.31:418][819]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2967.suppressed.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-2967.suppressed.exp
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: [5/5] WriteMetadata Unreal_MPMEditor.target
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Total time in Parallel executor: 2.47 seconds
+[2023.06.10-16.56.31:418][819]CompilerResultsLog: Total execution time: 7.33 seconds
+[2023.06.10-16.56.31:418][819]LogMainFrame: MainFrame: Module compiling took 7.494 seconds
+[2023.06.10-16.56.32:001][819]Display: HotReload took  8.1s.
+[2023.06.10-16.56.32:001][819]Display: Reload/Re-instancing Complete: 1 package changed, 13 classes unchanged, 1 enum unchanged, 6 functions remapped
+[2023.06.10-16.56.35:408][913]LogDebuggerCommands: Repeating last play command: Selected Viewport
+[2023.06.10-16.56.35:415][913]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2023.06.10-16.56.35:415][913]PIE: New page: PIE session: 2D_MPM_map (2023. 6. 11. 오전 10:56:35)
+[2023.06.10-16.56.35:415][913]LogPlayLevel: Creating play world package: /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.56.35:417][913]LogPlayLevel: PIE: StaticDuplicateObject took: (0.001713s)
+[2023.06.10-16.56.35:417][913]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/MY/Map/2D_MPM_map.2D_MPM_map to /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map (0.001805s)
+[2023.06.10-16.56.35:417][913]LogSubsystemCollection: Failed to initialize subsystem dependency (WorldPartitionSubsystem)
+[2023.06.10-16.56.35:417][913]LogChaos: FPhysicsSolverBase::AsyncDt:-1.000000
+[2023.06.10-16.56.35:418][913]LogAIModule: Creating AISystem for world 2D_MPM_map
+[2023.06.10-16.56.35:418][913]LogPlayLevel: PIE: World Init took: (0.000875s)
+[2023.06.10-16.56.35:493][913]LogUObjectHash: Compacting FUObjectHashTables data took   1.91ms
+[2023.06.10-16.56.35:494][913]LogAudio: Display: Creating Audio Device:                 Id: 22, Scope: Unique, Realtime: True
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Max Channels (voices):				  0
+[2023.06.10-16.56.35:494][913]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2023.06.10-16.56.35:494][913]LogAudio: Display: AudioDevice MaxSources: 32
+[2023.06.10-16.56.35:494][913]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2023.06.10-16.56.35:494][913]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2023.06.10-16.56.35:494][913]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2023.06.10-16.56.35:497][913]LogAudioMixer: Display: Initializing audio mixer using platform API: 'XAudio2'
+[2023.06.10-16.56.35:606][913]LogAudioMixer: Display: Using Audio Hardware Device 스피커(Realtek(R) Audio)
+[2023.06.10-16.56.35:606][913]LogAudioMixer: Display: Initializing Sound Submixes...
+[2023.06.10-16.56.35:606][913]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2023.06.10-16.56.35:606][913]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2023.06.10-16.56.35:607][913]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called. InstanceID=22
+[2023.06.10-16.56.35:607][913]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=22
+[2023.06.10-16.56.35:609][913]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=22
+[2023.06.10-16.56.35:609][913]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time. InstanceID=22
+[2023.06.10-16.56.35:609][913]LogInit: FAudioDevice initialized.
+[2023.06.10-16.56.35:609][913]LogAudio: Display: Audio Device (ID: 22) registered with world '2D_MPM_map'.
+[2023.06.10-16.56.35:621][913]LogLoad: Game class is 'GameModeBase'
+[2023.06.10-16.56.35:621][913]LogWorld: Bringing World /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map up for play (max tick rate 0) at 2023.06.11-01.56.35
+[2023.06.10-16.56.35:621][913]LogWorld: Bringing up level for play took: 0.000525
+[2023.06.10-16.56.35:623][913]LogOnline: OSS: Created online subsystem instance for: :Context_26
+[2023.06.10-16.56.35:629][913]PIE: Server logged in
+[2023.06.10-16.56.35:630][913]PIE: Play in editor total start time 0.216 seconds.
+[2023.06.10-16.56.50:884][368]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.56.50:884][368]LogWorld: BeginTearingDown for /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.56.50:884][368]LogWorld: UWorld::CleanupWorld for 2D_MPM_map, bSessionEnded=true, bCleanupResources=true
+[2023.06.10-16.56.50:884][368]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.56.50:900][368]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2023.06.10-16.56.50:904][368]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.56.50:932][368]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.56.50:934][368]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=22
+[2023.06.10-16.56.50:936][368]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=22
+[2023.06.10-16.56.50:972][368]LogUObjectHash: Compacting FUObjectHashTables data took   2.25ms
+[2023.06.10-16.56.51:092][371]LogPlayLevel: Display: Destroying online subsystem :Context_26
+[2023.06.10-16.56.54:668][478]LogDebuggerCommands: Repeating last play command: Selected Viewport
+[2023.06.10-16.56.54:674][478]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2023.06.10-16.56.54:674][478]PIE: New page: PIE session: 2D_MPM_map (2023. 6. 11. 오전 10:56:54)
+[2023.06.10-16.56.54:675][478]LogPlayLevel: Creating play world package: /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.56.54:676][478]LogPlayLevel: PIE: StaticDuplicateObject took: (0.001618s)
+[2023.06.10-16.56.54:676][478]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/MY/Map/2D_MPM_map.2D_MPM_map to /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map (0.001693s)
+[2023.06.10-16.56.54:676][478]LogSubsystemCollection: Failed to initialize subsystem dependency (WorldPartitionSubsystem)
+[2023.06.10-16.56.54:676][478]LogChaos: FPhysicsSolverBase::AsyncDt:-1.000000
+[2023.06.10-16.56.54:677][478]LogAIModule: Creating AISystem for world 2D_MPM_map
+[2023.06.10-16.56.54:677][478]LogPlayLevel: PIE: World Init took: (0.000690s)
+[2023.06.10-16.56.54:705][478]LogUObjectHash: Compacting FUObjectHashTables data took   1.17ms
+[2023.06.10-16.56.54:709][478]LogAudio: Display: Creating Audio Device:                 Id: 23, Scope: Unique, Realtime: True
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Max Channels (voices):				  0
+[2023.06.10-16.56.54:709][478]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2023.06.10-16.56.54:709][478]LogAudio: Display: AudioDevice MaxSources: 32
+[2023.06.10-16.56.54:709][478]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2023.06.10-16.56.54:709][478]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2023.06.10-16.56.54:709][478]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2023.06.10-16.56.54:711][478]LogAudioMixer: Display: Initializing audio mixer using platform API: 'XAudio2'
+[2023.06.10-16.56.54:816][478]LogAudioMixer: Display: Using Audio Hardware Device 스피커(Realtek(R) Audio)
+[2023.06.10-16.56.54:817][478]LogAudioMixer: Display: Initializing Sound Submixes...
+[2023.06.10-16.56.54:817][478]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2023.06.10-16.56.54:817][478]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2023.06.10-16.56.54:818][478]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called. InstanceID=23
+[2023.06.10-16.56.54:818][478]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=23
+[2023.06.10-16.56.54:819][478]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=23
+[2023.06.10-16.56.54:819][478]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time. InstanceID=23
+[2023.06.10-16.56.54:819][478]LogInit: FAudioDevice initialized.
+[2023.06.10-16.56.54:819][478]LogAudio: Display: Audio Device (ID: 23) registered with world '2D_MPM_map'.
+[2023.06.10-16.56.54:829][478]LogLoad: Game class is 'GameModeBase'
+[2023.06.10-16.56.54:829][478]LogWorld: Bringing World /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map up for play (max tick rate 0) at 2023.06.11-01.56.54
+[2023.06.10-16.56.54:829][478]LogWorld: Bringing up level for play took: 0.000417
+[2023.06.10-16.56.54:831][478]LogOnline: OSS: Created online subsystem instance for: :Context_27
+[2023.06.10-16.56.54:836][478]PIE: Server logged in
+[2023.06.10-16.56.54:837][478]PIE: Play in editor total start time 0.162 seconds.
+[2023.06.10-16.57.01:605][679]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.57.01:605][679]LogWorld: BeginTearingDown for /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.57.01:605][679]LogWorld: UWorld::CleanupWorld for 2D_MPM_map, bSessionEnded=true, bCleanupResources=true
+[2023.06.10-16.57.01:605][679]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.57.01:618][679]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2023.06.10-16.57.01:622][679]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.57.01:650][679]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.57.01:650][679]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=23
+[2023.06.10-16.57.01:652][679]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=23
+[2023.06.10-16.57.01:659][679]LogUObjectHash: Compacting FUObjectHashTables data took   1.62ms
+[2023.06.10-16.57.01:763][682]LogPlayLevel: Display: Destroying online subsystem :Context_27
+[2023.06.10-16.57.09:742][900]Candidate modules for hot reload:
+[2023.06.10-16.57.09:743][900]  Unreal_MPM
+[2023.06.10-16.57.09:747][900]Launching UnrealBuildTool... [E:/PROGRAM/UE_5.0/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe  -ModuleWithSuffix=Unreal_MPM,4672 Unreal_MPMEditor Win64 Development -Project="E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject" "E:/MY_GAME/UNREAL/Capstone_UnrealMPM_git/Unreal_MPM/Unreal_MPM.uproject"  -IgnoreJunk]
+[2023.06.10-16.57.09:757][900]Warning: Starting HotReload took  0.0s.
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: New page: Compilation - 2023. 6. 11. 오전 10:57:17
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Log file: C:\Users\user\AppData\Local\UnrealBuildTool\Log.txt
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git).
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Invalidating makefile for Unreal_MPMEditor (working set of source files changed)
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Parsing headers for Unreal_MPMEditor
+[2023.06.10-16.57.17:134][122]CompilerResultsLog:   Running UnrealHeaderTool "E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Unreal_MPM.uproject" "E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\Unreal_MPMEditor\Development\Unreal_MPMEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\user\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Reflection code generated for Unreal_MPMEditor in 2.3333448 seconds
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Building Unreal_MPMEditor...
+[2023.06.10-16.57.17:134][122]CompilerResultsLog: Using Visual Studio 2022 14.34.31937 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.34.31933) and Windows 10.0.22000.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [Adaptive Build] Excluded from Unreal_MPM unity file: MPM3D_NeoHookean.cpp
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: Determining max actions to execute in parallel (6 physical cores, 12 logical cores)
+[2023.06.10-16.57.17:135][122]CompilerResultsLog:   Executing up to 6 processes, one per physical core
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: Building 5 actions with 5 processes...
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [1/5] Compile MPM3D_NeoHookean.gen.cpp
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [2/5] Compile MPM3D_NeoHookean.cpp
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [3/5] Link UnrealEditor-Unreal_MPM-4672.lib
+[2023.06.10-16.57.17:135][122]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-4672.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-4672.exp
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [4/5] Link UnrealEditor-Unreal_MPM-4672.dll
+[2023.06.10-16.57.17:135][122]CompilerResultsLog:    Creating library E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-4672.suppressed.lib and object E:\MY_GAME\UNREAL\Capstone_UnrealMPM_git\Unreal_MPM\Intermediate\Build\Win64\UnrealEditor\Development\Unreal_MPM\UnrealEditor-Unreal_MPM-4672.suppressed.exp
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: [5/5] WriteMetadata Unreal_MPMEditor.target
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: Total time in Parallel executor: 2.50 seconds
+[2023.06.10-16.57.17:135][122]CompilerResultsLog: Total execution time: 7.24 seconds
+[2023.06.10-16.57.17:135][122]LogMainFrame: MainFrame: Module compiling took 7.402 seconds
+[2023.06.10-16.57.17:706][122]Display: HotReload took  8.0s.
+[2023.06.10-16.57.17:706][122]Display: Reload/Re-instancing Complete: 1 package changed, 13 classes unchanged, 1 enum unchanged, 6 functions remapped
+[2023.06.10-16.57.19:187][158]LogDebuggerCommands: Repeating last play command: Selected Viewport
+[2023.06.10-16.57.19:193][158]LogPlayLevel: PlayLevel: No blueprints needed recompiling
+[2023.06.10-16.57.19:194][158]PIE: New page: PIE session: 2D_MPM_map (2023. 6. 11. 오전 10:57:19)
+[2023.06.10-16.57.19:194][158]LogPlayLevel: Creating play world package: /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.57.19:196][158]LogPlayLevel: PIE: StaticDuplicateObject took: (0.001775s)
+[2023.06.10-16.57.19:196][158]LogPlayLevel: PIE: Created PIE world by copying editor world from /Game/MY/Map/2D_MPM_map.2D_MPM_map to /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map (0.001853s)
+[2023.06.10-16.57.19:196][158]LogSubsystemCollection: Failed to initialize subsystem dependency (WorldPartitionSubsystem)
+[2023.06.10-16.57.19:196][158]LogChaos: FPhysicsSolverBase::AsyncDt:-1.000000
+[2023.06.10-16.57.19:196][158]LogAIModule: Creating AISystem for world 2D_MPM_map
+[2023.06.10-16.57.19:196][158]LogPlayLevel: PIE: World Init took: (0.000684s)
+[2023.06.10-16.57.19:262][158]LogUObjectHash: Compacting FUObjectHashTables data took   1.59ms
+[2023.06.10-16.57.19:263][158]LogAudio: Display: Creating Audio Device:                 Id: 24, Scope: Unique, Realtime: True
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Max Channels (voices):				  0
+[2023.06.10-16.57.19:263][158]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2023.06.10-16.57.19:263][158]LogAudio: Display: AudioDevice MaxSources: 32
+[2023.06.10-16.57.19:264][158]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2023.06.10-16.57.19:264][158]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2023.06.10-16.57.19:264][158]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2023.06.10-16.57.19:266][158]LogAudioMixer: Display: Initializing audio mixer using platform API: 'XAudio2'
+[2023.06.10-16.57.19:372][158]LogAudioMixer: Display: Using Audio Hardware Device 스피커(Realtek(R) Audio)
+[2023.06.10-16.57.19:372][158]LogAudioMixer: Display: Initializing Sound Submixes...
+[2023.06.10-16.57.19:372][158]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2023.06.10-16.57.19:372][158]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2023.06.10-16.57.19:374][158]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called. InstanceID=24
+[2023.06.10-16.57.19:374][158]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048, InstanceID=24
+[2023.06.10-16.57.19:375][158]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal(), InstanceID=24
+[2023.06.10-16.57.19:375][158]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time. InstanceID=24
+[2023.06.10-16.57.19:375][158]LogInit: FAudioDevice initialized.
+[2023.06.10-16.57.19:375][158]LogAudio: Display: Audio Device (ID: 24) registered with world '2D_MPM_map'.
+[2023.06.10-16.57.19:387][158]LogLoad: Game class is 'GameModeBase'
+[2023.06.10-16.57.19:388][158]LogWorld: Bringing World /Game/MY/Map/UEDPIE_0_2D_MPM_map.2D_MPM_map up for play (max tick rate 0) at 2023.06.11-01.57.19
+[2023.06.10-16.57.19:388][158]LogWorld: Bringing up level for play took: 0.000497
+[2023.06.10-16.57.19:390][158]LogOnline: OSS: Created online subsystem instance for: :Context_28
+[2023.06.10-16.57.19:395][158]PIE: Server logged in
+[2023.06.10-16.57.19:395][158]PIE: Play in editor total start time 0.202 seconds.
+[2023.06.10-16.57.30:895][501]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.57.30:895][501]LogWorld: BeginTearingDown for /Game/MY/Map/UEDPIE_0_2D_MPM_map
+[2023.06.10-16.57.30:895][501]LogWorld: UWorld::CleanupWorld for 2D_MPM_map, bSessionEnded=true, bCleanupResources=true
+[2023.06.10-16.57.30:895][501]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.57.30:909][501]LogPlayLevel: Display: Shutting down PIE online subsystems
+[2023.06.10-16.57.30:914][501]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2023.06.10-16.57.30:943][501]LogAudio: Display: Audio Device unregistered from world 'None'.
+[2023.06.10-16.57.30:943][501]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=24
+[2023.06.10-16.57.30:945][501]LogAudioMixer: FMixerPlatformXAudio2::StopAudioStream() called. InstanceID=24
+[2023.06.10-16.57.30:949][501]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2023.06.10-16.57.30:976][501]LogUObjectHash: Compacting FUObjectHashTables data took   1.86ms
+[2023.06.10-16.57.31:095][504]LogPlayLevel: Display: Destroying online subsystem :Context_28

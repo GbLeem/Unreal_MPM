@@ -24,7 +24,11 @@ void AMPM3D_NeoHookean::BeginPlay()
 	
 	TArray<FVector3f> TempPositions;
 
-	const float spacing = 0.5f;
+	/*const float spacing = 0.5f;
+	const int box_x = 16;
+	const int box_y = 16;
+	const int box_z = 16;*/
+	const float spacing = 1.f;
 	const int box_x = 16;
 	const int box_y = 16;
 	const int box_z = 16;
@@ -171,7 +175,7 @@ void AMPM3D_NeoHookean::P2G()
 
 		stress = (1.f / J) * (P * F_T);
 
-		PMatrix<float, 3, 3> eq_16_term_0 = -volume * 4 * stress * dt;
+		PMatrix<float, 3, 3> eq_16_term_0 = -volume * 2 * stress * dt;
 
 		FIntVector cell_idx = FIntVector(p->x.X, p->x.Y, p->x.Z);
 		FVector3f cell_diff = FVector3f(p->x.X - cell_idx.X - 0.5f, p->x.Y - cell_idx.Y - 0.5f, p->x.Z - cell_idx.Z - 0.5f);
@@ -296,7 +300,7 @@ void AMPM3D_NeoHookean::G2P()
 				}
 			}
 		}
-		p->C = B * 4;
+		p->C = B * 2;
 		p->x += p->v * dt;
 
 		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);
