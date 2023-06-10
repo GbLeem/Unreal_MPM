@@ -2,10 +2,13 @@
 #pragma once
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Chaos/Matrix.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MPM3D_Fluid.generated.h"
+
+using namespace Chaos;
 
 UCLASS()
 class UNREAL_MPM_API AMPM3D_Fluid : public AActor
@@ -34,16 +37,6 @@ public:
 	void UpdateParticles();
 
 public:
-	FVector3f MultiplyMatrixAndVector(FMatrix m, FVector3f v);
-	
-	template<typename T>
-	FMatrix ScalingMatrixFluid(FMatrix m, T scale);
-
-	FMatrix ResetMatrix(FMatrix m);
-	FMatrix PlusMatrix(FMatrix m1, FMatrix m2);
-	FVector3f MakeEq16(FMatrix eq_16_term_0, float weight, FVector3f cell_dist);
-
-public:
 	struct Cell
 	{
 		FVector3f v;
@@ -54,7 +47,7 @@ public:
 	{
 		FVector3f x;
 		FVector3f v;
-		FMatrix C; //affine momentum matrix
+		PMatrix<float,3,3> C; //affine momentum matrix
 		float mass;
 	};
 
@@ -67,13 +60,12 @@ public:
 	const int grid_res = 32;
 	const int NumCells = grid_res * grid_res * grid_res;
 
-	//const float dt = 0.1f;
-	const float dt = 0.02f;
+	const float dt = 0.2f;
 	const float iterations = (int)(1.f / dt);
 	const float gravity = -0.3f;
 
 	const float rest_density = 4.0f;
-	const float dynamic_viscosity = 0.1f;
+	const float dynamic_viscosity = .2f;
 
 	const float eos_stiffness = 10.f;
 	const float eos_power = 4.f;
@@ -82,23 +74,3 @@ public:
 	TArray<Cell*> m_pGrid;
 	TArray<FVector3f> weights;
 };
-
-template<typename T>
-inline FMatrix AMPM3D_Fluid::ScalingMatrixFluid(FMatrix m, T scale)
-{
-	FMatrix resultMatrix;
-
-	resultMatrix.M[0][0] *= scale;
-	resultMatrix.M[0][1] *= scale;
-	resultMatrix.M[0][2] *= scale;
-
-	resultMatrix.M[1][0] *= scale;
-	resultMatrix.M[1][1] *= scale;
-	resultMatrix.M[1][2] *= scale;
-
-	resultMatrix.M[2][0] *= scale;
-	resultMatrix.M[2][1] *= scale;
-	resultMatrix.M[2][2] *= scale;
-
-	return resultMatrix;
-}
