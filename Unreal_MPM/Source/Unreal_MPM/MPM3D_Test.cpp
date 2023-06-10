@@ -49,9 +49,7 @@ void AMPM3D_Test::BeginPlay()
 	{
 		Particle* p = new Particle();
 		p->x = TempPositions[i];
-		//p->v = { 0.f,0.f,0.f };//FVector3f{ (FMath::FRandRange(0,1) - 0.5f) * 0.5f, (FMath::FRandRange(0,1) - 0.5f + 2.75f) * 0.5f , 0.5f };
-		p->v= FVector3f{ (FMath::FRandRange(0,1) - 0.5f) * 0.5f, (FMath::FRandRange(0,1) - 0.5f + 2.75f) * 0.5f , 0.5f };
-		//p->C = { 0, 0, 0, 0 };
+		p->v= FVector3f{ (FMath::FRandRange(0,1) - 0.5f) * 0.5f, (FMath::FRandRange(0,1) - 0.5f + 2.75f) * 0.5f , (FMath::FRandRange(0,1) - 0.5f-2.75f)*0.5f };
 		p->mass = 1.f;
 		m_pParticles.Add(p);
 	}
@@ -86,10 +84,6 @@ void AMPM3D_Test::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*for (int i = 0; i < iterations; ++i)
-	{
-		Simulate();
-	}*/
 	Simulate();
 	UpdateParticles();
 }
@@ -101,15 +95,6 @@ void AMPM3D_Test::ClearGrid()
 		c->mass = 0;
 		c->v = { 0.f,0.f,0.f };
 	}
-	/*for (int i = 0; i < NumCells; ++i)
-	{
-		Cell* cell = m_pGrid[i];
-
-		cell->mass = 0;
-		cell->v = { 0.f,0.f,0.f };
-
-		m_pGrid[i] = cell;
-	}*/
 }
 
 void AMPM3D_Test::P2G()

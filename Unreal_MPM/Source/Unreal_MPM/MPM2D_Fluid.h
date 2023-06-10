@@ -70,7 +70,7 @@ public:
 
 	const float dt = 0.1f;
 	const float iterations = (int)(1.0f / dt);
-	const float gravity = -0.5f;
+	const float gravity = -0.3f;
 
 	//fluid parameter
 	const float rest_density = 4.f;

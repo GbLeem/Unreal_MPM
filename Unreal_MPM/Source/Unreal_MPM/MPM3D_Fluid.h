@@ -35,9 +35,14 @@ public:
 
 public:
 	FVector3f MultiplyMatrixAndVector(FMatrix m, FVector3f v);
-	FMatrix ScalingMatrix(FMatrix m, float scale);
+	
+	template<typename T>
+	FMatrix ScalingMatrixFluid(FMatrix m, T scale);
+
 	FMatrix ResetMatrix(FMatrix m);
+	FMatrix PlusMatrix(FMatrix m1, FMatrix m2);
 	FVector3f MakeEq16(FMatrix eq_16, float weight, FVector3f cell_dist);
+
 public:
 	struct Cell
 	{
@@ -55,26 +60,45 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere)
-		UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
+	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
 	int NumParticles;
 
 	const int grid_res = 32;
 	const int NumCells = grid_res * grid_res * grid_res;
 
-	const float dt = 0.02f;
-	//const float dt = 0.2f;
+	//const float dt = 0.1f;
+	const float dt = 0.2f;
 	const float iterations = (int)(1.f / dt);
-
 	const float gravity = -0.3f;
+
 	const float rest_density = 4.0f;
 	const float dynamic_viscosity = 0.1f;
 
 	const float eos_stiffness = 10.f;
-	const float eos_power = 4;
+	const float eos_power = 4.f;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
-
 	TArray<FVector3f> weights;
 };
+
+template<typename T>
+inline FMatrix AMPM3D_Fluid::ScalingMatrixFluid(FMatrix m, T scale)
+{
+	FMatrix resultMatrix;
+
+	resultMatrix.M[0][0] *= scale;
+	resultMatrix.M[0][1] *= scale;
+	resultMatrix.M[0][2] *= scale;
+
+	resultMatrix.M[1][0] *= scale;
+	resultMatrix.M[1][1] *= scale;
+	resultMatrix.M[1][2] *= scale;
+
+	resultMatrix.M[2][0] *= scale;
+	resultMatrix.M[2][1] *= scale;
+	resultMatrix.M[2][2] *= scale;
+
+	return resultMatrix;
+}
