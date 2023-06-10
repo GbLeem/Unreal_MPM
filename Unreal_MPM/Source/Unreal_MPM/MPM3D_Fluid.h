@@ -41,7 +41,7 @@ public:
 
 	FMatrix ResetMatrix(FMatrix m);
 	FMatrix PlusMatrix(FMatrix m1, FMatrix m2);
-	FVector3f MakeEq16(FMatrix eq_16, float weight, FVector3f cell_dist);
+	FVector3f MakeEq16(FMatrix eq_16_term_0, float weight, FVector3f cell_dist);
 
 public:
 	struct Cell
@@ -68,7 +68,7 @@ public:
 	const int NumCells = grid_res * grid_res * grid_res;
 
 	//const float dt = 0.1f;
-	const float dt = 0.2f;
+	const float dt = 0.02f;
 	const float iterations = (int)(1.f / dt);
 	const float gravity = -0.3f;
 

@@ -92,6 +92,10 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*for (int i = 0; i < iterations; ++i)
+	{
+		Simulate();
+	}*/
 	Simulate();
 	UpdateParticles();
 }
@@ -115,7 +119,7 @@ void AMPM3D_Fluid::P2G_1()
 		FVector3f cell_diff = { p->x.X - cell_idx.X - 0.5f, p->x.Y - cell_idx.Y - 0.5f, p->x.Z - cell_idx.Z - 0.5f };
 
 		weights.Empty(3);
-		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2),0.5f * (float)pow(0.5f - cell_diff.Z, 2) });
+		weights.Add({ 0.5f * (float)pow(0.5f - cell_diff.X, 2), 0.5f * (float)pow(0.5f - cell_diff.Y, 2), 0.5f * (float)pow(0.5f - cell_diff.Z, 2) });
 		weights.Add({ 0.75f - (float)pow(cell_diff.X, 2), 0.75f - (float)pow(cell_diff.Y, 2), 0.75f - (float)pow(cell_diff.Z, 2) });
 		weights.Add({ 0.5f * (float)pow(0.5f + cell_diff.X, 2), 0.5f * (float)pow(0.5f + cell_diff.Y, 2), 0.5f * (float)pow(0.5f + cell_diff.Z, 2) });
 
@@ -212,12 +216,16 @@ void AMPM3D_Fluid::P2G_2()
 
 					//eq_16_term_0 = ScalingMatrixFluid(eq_16_term_0, weight);
 					//FVector3f momentum = MultiplyMatrixAndVector(eq_16_term_0, cell_dist);
-					//FVector3f momentum = MultiplyMatrixAndVector(eq_16_term_0.ApplyScale(weight), cell_dist);
-					//FVector3f momentum = MultiplyMatrixAndVector(eq_16_term_0.M[0][0]*weight)
-					FVector3f momentum = MakeEq16(eq_16_term_0, weight, cell_dist);
-
+					FVector3f momentum = MultiplyMatrixAndVector(eq_16_term_0.ApplyScale(weight), cell_dist);
+					
+					//FVector3f momentum = MakeEq16(eq_16_term_0, weight, cell_dist);
+					
+					/*FVector3f momentum = FVector3f(
+						  eq_16_term_0.M[0][0] * weight * cell_dist.X + eq_16_term_0.M[0][1] * weight * cell_dist.Y + eq_16_term_0.M[0][2] * weight * cell_dist.Z
+						, eq_16_term_0.M[1][0] * weight * cell_dist.X + eq_16_term_0.M[1][1] * weight * cell_dist.Y + eq_16_term_0.M[1][2] * weight * cell_dist.Z
+						, eq_16_term_0.M[2][0] * weight * cell_dist.X + eq_16_term_0.M[2][1] * weight * cell_dist.Y + eq_16_term_0.M[2][2] * weight * cell_dist.Z);*/
+					
 					cell->v += momentum;
-
 					m_pGrid[cell_index] = cell;
 				}
 			}
@@ -309,7 +317,7 @@ void AMPM3D_Fluid::G2P()
 				}
 			}
 		}
-		p->C = ScalingMatrixFluid(B, 4);
+		p->C = ScalingMatrixFluid(B, 2);
 
 		p->x += p->v * dt;
 
@@ -404,10 +412,17 @@ FMatrix AMPM3D_Fluid::PlusMatrix(FMatrix m1, FMatrix m2)
 	return resultMatrix;
 }
 
-FVector3f AMPM3D_Fluid::MakeEq16(FMatrix eq_16, float weight, FVector3f cell_dist)
+FVector3f AMPM3D_Fluid::MakeEq16(FMatrix eq_16_term_0, float weight, FVector3f cell_dist)
 {
-	eq_16 = ScalingMatrixFluid(eq_16, weight);
+	/*eq_16 = ScalingMatrixFluid(eq_16, weight);
 	FVector3f momentum = MultiplyMatrixAndVector(eq_16, cell_dist);
+
+	return momentum;*/
+
+	FVector3f momentum = FVector3f(
+		eq_16_term_0.M[0][0] * weight * cell_dist.X + eq_16_term_0.M[0][1] * weight * cell_dist.Y + eq_16_term_0.M[0][2] * weight * cell_dist.Z
+		, eq_16_term_0.M[1][0] * weight * cell_dist.X + eq_16_term_0.M[1][1] * weight * cell_dist.Y + eq_16_term_0.M[1][2] * weight * cell_dist.Z
+		, eq_16_term_0.M[2][0] * weight * cell_dist.X + eq_16_term_0.M[2][1] * weight * cell_dist.Y + eq_16_term_0.M[2][2] * weight * cell_dist.Z);
 
 	return momentum;
 }
