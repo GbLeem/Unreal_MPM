@@ -60,7 +60,6 @@ void AMPM2D_Test::BeginPlay()
 		Cell* cell = new Cell();
 		m_pGrid.Add(cell);
 	}
-
 	
 	//make mesh
 	if (InstancedStaticMeshComponent->GetInstanceCount() == 0)
