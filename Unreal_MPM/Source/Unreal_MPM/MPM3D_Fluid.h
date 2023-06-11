@@ -60,7 +60,7 @@ public:
 	const int grid_res = 32;
 	const int NumCells = grid_res * grid_res * grid_res;
 
-	const float dt = 0.2f;
+	const float dt = 0.1f;
 	const float iterations = (int)(1.f / dt);
 	const float gravity = -0.3f;
 
