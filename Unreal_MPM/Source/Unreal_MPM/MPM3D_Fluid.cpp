@@ -92,7 +92,7 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 10; ++i)
 	{
 		Simulate();
 	}
@@ -199,7 +199,7 @@ void AMPM3D_Fluid::P2G_2()
 		PMatrix<float, 3, 3> viscosity_term = dynamic_viscosity * strain;
 		stress += viscosity_term;
 
-		PMatrix<float, 3, 3> eq_16_term_0 = -volume * 2 * stress * dt;
+		PMatrix<float, 3, 3> eq_16_term_0 = -volume * 1 * stress * dt;
 
 		for (gx = 0; gx < 3; ++gx)
 		{
@@ -309,7 +309,7 @@ void AMPM3D_Fluid::G2P()
 				}
 			}
 		}
-		p->C = B * 2;
+		p->C = B * 1;
 
 		p->x += p->v * dt;
 
