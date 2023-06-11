@@ -65,7 +65,7 @@ public:
 	const float gravity = -0.3f;
 
 	const float rest_density = 4.0f;
-	const float dynamic_viscosity = .2f;
+	const float dynamic_viscosity = 0.1f;
 
 	const float eos_stiffness = 10.f;
 	const float eos_power = 4.f;

@@ -22,7 +22,7 @@ void AMPM3D_Fluid::BeginPlay()
 
 	TArray<FVector3f> TempPositions;
 
-	const float spacing = 1.f;
+	const float spacing = 0.5f;
 	const int box_x = 16;
 	const int box_y = 16;
 	const int box_z = 16;
@@ -30,24 +30,13 @@ void AMPM3D_Fluid::BeginPlay()
 	const float sy = grid_res / 2.0f;
 	const float sz = grid_res / 2.0f;
 
-	//for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing) //4~12 
-	//{
-	//	for (float j = sy - box_y / 2; j < sy + box_y / 2; j += spacing)
-	//	{
-	//		for (float k = sz - box_z / 2; k < sz + box_z / 2; k += spacing)
-	//		{
-	//			auto Pos = FVector3f(i, j, k);
-	//			TempPositions.Add(Pos);
-	//		}
-	//	}
-	//}
-	for (float i = -box_x / 2; i < box_x / 2; i += spacing) //32-8 < 32+8 -> 16-8 < <16+8 : 8~24
+	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing) //4~12 
 	{
-		for (float j = -box_y / 2; j < box_y / 2; j += spacing)
+		for (float j = sy - box_y / 2; j < sy + box_y / 2; j += spacing)
 		{
-			for (float k = -box_z / 2; k < box_z / 2; k += spacing)
+			for (float k = sz - box_z / 2; k < sz + box_z / 2; k += spacing)
 			{
-				auto Pos = FVector3f(sx + i, sy + j, sz + k);
+				auto Pos = FVector3f(i, j, k);
 				TempPositions.Add(Pos);
 			}
 		}
@@ -103,11 +92,11 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//for (int i = 0; i < 5; ++i)
-	//{
-	//	Simulate();
-	//}
-	Simulate();
+	for (int i = 0; i < 5; ++i)
+	{
+		Simulate();
+	}
+	//Simulate();
 	UpdateParticles();
 }
 
@@ -245,7 +234,7 @@ void AMPM3D_Fluid::UpdateGrid()
 		if (c->mass > 0)
 		{
 			c->v /= c->mass;
-			c->v += dt * FVector3f(0, gravity, 0);
+			c->v += dt * FVector3f(0, 0, gravity);
 
 			int x = i / (grid_res * grid_res);
 			int y = (i % (grid_res * grid_res)) / grid_res;

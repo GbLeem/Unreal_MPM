@@ -32,7 +32,7 @@ void AMPM3D_NeoHookean::BeginPlay()
 	const float sy = grid_res / 2.f;
 	const float sz = grid_res / 2.f;
 
-	for (float i = - box_x / 2; i < box_x / 2; i += spacing) //32-8 < 32+8 -> 16-8 < <16+8 : 8~24
+	for (float i = - box_x / 2; i < box_x / 2; i += spacing) //-16+16
 	{
 		for (float j = - box_y / 2; j < box_y / 2; j += spacing)
 		{
@@ -126,11 +126,11 @@ void AMPM3D_NeoHookean::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*for (int i = 0; i < iterations; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
-	}*/
-	Simulate();
+	}
+	//Simulate();
 	UpdateParticles();
 }
 
@@ -221,7 +221,7 @@ void AMPM3D_NeoHookean::UpdateGrid()
 		if (cell->mass > 0)
 		{
 			cell->v /= cell->mass;
-			cell->v += dt * FVector3f(0, gravity, 0);
+			cell->v += dt * FVector3f(0, 0, gravity);
 
 			int x = i / (grid_res * grid_res);
 			int y = (i % (grid_res * grid_res)) / grid_res;
