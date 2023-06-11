@@ -25,7 +25,7 @@ void AMPM3D_Fluid::BeginPlay()
 	const float spacing = 0.5f;
 	const int box_x = 16;
 	const int box_y = 16;
-	const int box_z = 16;
+	const int box_z = 8;
 	const float sx = grid_res / 2.0f;
 	const float sy = grid_res / 2.0f;
 	const float sz = grid_res / 2.0f;
@@ -57,7 +57,7 @@ void AMPM3D_Fluid::BeginPlay()
 		Particle* p = new Particle();
 		p->x = TempPositions[i];
 		p->v = { 0.f, 0.f, 0.f };
-		p->C;
+		p->C = (0, 0, 0, 0, 0, 0, 0, 0, 0);
 		p->mass = 1.f;
 		m_pParticles.Add(p);
 	}
@@ -92,7 +92,7 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < iterations; ++i)
 	{
 		Simulate();
 	}
@@ -171,6 +171,7 @@ void AMPM3D_Fluid::P2G_2()
 
 		float density = 0.f;
 		int gx, gy, gz;
+
 		for (gx = 0; gx < 3; ++gx)
 		{
 			for (gy = 0; gy < 3; ++gy)
@@ -304,18 +305,22 @@ void AMPM3D_Fluid::G2P()
 					term.M[2][2] = (weighted_velocity.Z * dist.Z);
 
 					B += term;
-
 					p->v += weighted_velocity;
 				}
 			}
 		}
 		p->C = B * 1;
-
 		p->x += p->v * dt;
 
 		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);
 		p->x.Y = FMath::Clamp(p->x.Y, 1, grid_res - 2);
 		p->x.Z = FMath::Clamp(p->x.Z, 1, grid_res - 2);
+
+
+		/*{
+			FVector3f force = { 0.f, 0.1f, 0.f };
+			p->v += force;
+		}*/
 
 		FVector3f x_n = p->x + p->v;
 		const float wall_min = 3;

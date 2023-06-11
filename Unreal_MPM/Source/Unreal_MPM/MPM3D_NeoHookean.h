@@ -65,7 +65,7 @@ public:
 	const float iterations = (int)(1.f / dt);
 	const float gravity = -0.3f;
 
-	const float elastic_lambda = 15.f;
+	const float elastic_lambda = 10.f;
 	const float elastic_mu = 20.f;
 
 	TArray<Particle*> m_pParticles;
