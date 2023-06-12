@@ -3,11 +3,13 @@
 #pragma once
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Chaos/Matrix.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-
 #include "Interaction_MPM3D.generated.h"
+
+using namespace Chaos;
 
 UCLASS()
 class UNREAL_MPM_API AInteraction_MPM3D : public AActor
@@ -15,43 +17,36 @@ class UNREAL_MPM_API AInteraction_MPM3D : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AInteraction_MPM3D();
-
-	void Initialize();
-	void SimulatingPipeLine(double timestep);
-	void UpdateParticle();
-	void AddForce();
-
-	void ClearGrid();
-	void P2GFirst();
-	void UpdateGrid(double timestep);
-	void G2P(double timestep);
-
-
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-public:	
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void ClearGrid();
+	void P2G();
+	void UpdateGrid();
+	void G2P();
+
+	void Simulate();
+	void UpdateParticles();
 
 public:
 	struct Cell
 	{
-		FVector3f Vel;
+		FVector3f v;
 		float mass;
 	};
 
 	struct Particle
 	{
-		FVector3f Pos;
-		FVector3f Vel;
-		FMatrix C; //affine momentum matrix
-		FMatrix F; //Deformation gradient
-
-		bool First;
+		FVector3f x;
+		FVector3f v;
+		PMatrix<float, 3, 3> C; //affine momentum matrix
 		float mass;
 		float volume_0;
 	};
@@ -60,26 +55,24 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
-public:
-
-	//simulation parameter
-	const float gravity = -0.3f;
-	double timesteps = 1.0f; 
-	//double timesteps = 0.5f;
-	const float iterations = (int)(1.f / timesteps);
-
-	//grid data
-	const int grid_res = 20;
-	const int num_cells = grid_res * grid_res * grid_res;
-
 	int NumParticles1 = 0;
 	int NumParticles2 = 0;
+	int NumParticles3 = 0;
 	int TotalNumParticles = 0;
 
-	//array
-	TArray<Particle*> m_pParticles; //1+2 total particles
+	const int grid_res = 32;
+	const int NumCells = grid_res * grid_res * grid_res;
+
+	const float dt = 0.1f;
+	const float iterations = (int)(1.f / dt);
+	const float gravity = -0.3f;
+
+	const float elastic_lambda = 10.f;
+	const float elastic_mu = 20.f;
+
+	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
-	TArray<FVector3f> TempPositions1;
-	TArray<FVector3f> TempPositions2;
+	TArray<PMatrix<float, 3, 3>> Fs;
+	TArray<FVector3f> weights;
 };
 
