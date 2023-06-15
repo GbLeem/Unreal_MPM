@@ -20,6 +20,7 @@ void AMPM3D_Test::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Initialize
 	TArray<FVector3f> TempPositions;
 
 	const float spacing = 1.0f;
@@ -30,7 +31,7 @@ void AMPM3D_Test::BeginPlay()
 	const float sy = grid_res / 2.f;
 	const float sz = grid_res / 2.f;
 
-	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing) //32-8 < 32+8 -> 16-8 < <16+8 : 8~24
+	for (float i = sx - box_x / 2; i < sx + box_x / 2; i += spacing) 
 	{
 		for (float j = sy - box_y / 2; j < sy + box_y / 2; j += spacing)
 		{
