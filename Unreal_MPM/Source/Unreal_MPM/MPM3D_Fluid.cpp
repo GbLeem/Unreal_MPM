@@ -92,7 +92,7 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < iterations; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
 	}
@@ -200,6 +200,7 @@ void AMPM3D_Fluid::P2G_2()
 		PMatrix<float, 3, 3> viscosity_term = dynamic_viscosity * strain;
 		stress += viscosity_term;
 
+		//PMatrix<float, 3, 3> eq_16_term_0 = -volume * 1 * stress * dt;
 		PMatrix<float, 3, 3> eq_16_term_0 = -volume * 1 * stress * dt;
 
 		for (gx = 0; gx < 3; ++gx)
@@ -309,6 +310,7 @@ void AMPM3D_Fluid::G2P()
 				}
 			}
 		}
+		//p->C = B * 1;
 		p->C = B * 1;
 		p->x += p->v * dt;
 
@@ -317,10 +319,10 @@ void AMPM3D_Fluid::G2P()
 		p->x.Z = FMath::Clamp(p->x.Z, 1, grid_res - 2);
 
 
-		/*{
-			FVector3f force = { 0.f, 0.1f, 0.f };
+		{
+			FVector3f force = { 0.f, 0.0f, -1.f };
 			p->v += force;
-		}*/
+		}
 
 		FVector3f x_n = p->x + p->v;
 		const float wall_min = 3;
@@ -362,7 +364,7 @@ void AMPM3D_Fluid::UpdateParticles()
 
 	for (int i = 0; i < NumParticles; ++i)
 	{
-		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 100.f, m_pParticles[i]->x.Y * 100.f, m_pParticles[i]->x.Z * 100.f));
+		FTransform tempValue = FTransform(FVector(m_pParticles[i]->x.X * 150.f, m_pParticles[i]->x.Y * 150.f, m_pParticles[i]->x.Z * 150.f));
 		Transforms.Add(tempValue);
 		InstancedStaticMeshComponent->UpdateInstanceTransform(i, Transforms[i]);
 	}

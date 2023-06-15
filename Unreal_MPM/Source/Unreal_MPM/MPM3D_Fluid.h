@@ -62,13 +62,13 @@ public:
 
 	const float dt = 0.1f;
 	const float iterations = (int)(1.f / dt);
-	const float gravity = -0.3f;
+	const float gravity = -0.5f;
 
-	const float rest_density = 2.0f;
+	const float rest_density = 4.0f;
 	const float dynamic_viscosity = 0.1f;
 
 	const float eos_stiffness = 5.f;
-	const float eos_power = 4;
+	const float eos_power = 5;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
