@@ -27,10 +27,11 @@ https://www.youtube.com/watch?v=Ec28TGyPb-g
 ## 실행 방법
 * branch를 3d branch로 바꾼 후 다운로드
 * 프로젝트를 열고 Content\MY\Final 폴더 안에 존재하는 7가지의 블루프린트를 map에 배치 후 실행
-* _Test : no deformation 상황에서의 시뮬레이션
-* _NeoHookean : hyper elastic 상황에서의 시뮬레이션
-* _Fluid : fluid 시뮬레이션
-* _Interaction : 두개의 물체가 상호작용하는 상황에서의 시뮬레이션
+  * 블루프린트 이름과 설명
+    * _Test : no deformation 상황에서의 시뮬레이션
+    * _NeoHookean : hyper elastic 상황에서의 시뮬레이션
+    * _Fluid : fluid 시뮬레이션
+    * _Interaction : 두개의 물체가 상호작용하는 상황에서의 시뮬레이션
 ## 프로젝트 결과
 * 구현된 시뮬레이션은 2D,3D 상황에서의 no deformation gradient, hyper elatsic gradient, fluid
 * 구현 모습 일부
