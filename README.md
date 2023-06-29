@@ -2,7 +2,7 @@
 Material Point Method in Unreal Engine 5
 ## 2023-1  Software Capstone Design
 ## 개요
-* 2023-1 소프트웨어융합 캡스톤 디자인
+* 2023-1 소프트웨어융합캡스톤디자인
 * Unreal Engine 5에 MPM을 이용한 물리 시뮬레이션 구현
 * 대표 참고 논문 : A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling (SIGGRAPH 2018)
 * 결과 영상
