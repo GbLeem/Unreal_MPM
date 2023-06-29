@@ -21,7 +21,7 @@ https://www.youtube.com/watch?v=Ec28TGyPb-g
 * branch를 3d branch로 바꾼 후 다운로드
 * 프로젝트를 열고 Content\MY\Final 폴더 안에 존재하는 6가지의 블루프린트를 map에 배치 후 실행
 ## 프로젝트 결과
-* 구현된 시뮬레이션은 2D,3D 상황에서의 no deforamtionn gradient, hyper elatsic gradient, fluid
+* 구현된 시뮬레이션은 2D,3D 상황에서의 no deformation gradient, hyper elatsic gradient, fluid
 * No Deformation Gradient
     * 2D
     * 3D
