@@ -92,13 +92,13 @@ void AMPM3D_Fluid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < iterations; ++i)
 	{
 		Simulate();
 	}
-	//Simulate();
 	UpdateParticles();
 }
+
 
 void AMPM3D_Fluid::ClearGrid()
 {

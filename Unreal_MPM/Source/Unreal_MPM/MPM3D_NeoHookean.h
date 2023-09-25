@@ -58,15 +58,15 @@ public:
 
 	int NumParticles = 0;
 
-	const int grid_res = 32;
+	const int grid_res = 64;
 	const int NumCells = grid_res * grid_res * grid_res;
 
 	const float dt = 0.1f;
-	const float iterations = (int)(1.f / dt);
+	//const float iterations = (int)(1.f / dt);
 	const float gravity = -0.3f;
 
-	const float elastic_lambda = 10.f;
-	const float elastic_mu = 20.f;
+	const float elastic_lambda = 12.f;
+	const float elastic_mu = 300.f;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;

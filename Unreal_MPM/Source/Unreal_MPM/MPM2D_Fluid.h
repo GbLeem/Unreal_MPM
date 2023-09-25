@@ -56,7 +56,7 @@ public:
 	struct Cell
 	{
 		FVector2f v;
-		float mass; //일정하게 유지
+		float mass; //?�정?�게 ?��?
 	};
 
 public:
