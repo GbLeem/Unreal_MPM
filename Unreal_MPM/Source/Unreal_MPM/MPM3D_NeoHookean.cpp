@@ -127,11 +127,11 @@ void AMPM3D_NeoHookean::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (int i = 0; i < 5; ++i)
+	/*for (int i = 0; i < 5; ++i)
 	{
 		Simulate();
-	}
-	//Simulate();
+	}*/
+	Simulate();
 	UpdateParticles();
 }
 
