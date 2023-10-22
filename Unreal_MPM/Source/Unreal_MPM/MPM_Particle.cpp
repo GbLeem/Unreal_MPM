@@ -165,6 +165,7 @@ void AMPM_Particle::Simulate()
 			//convert momentum to velocity, apply gravity
 			c->v /= c->mass;
 			c->v += dt * FVector2f(0, m_gravity);
+			//c->v += FVector2f(0, m_gravity);
 
 			//boundary conditions
 			int x = indexOfCell / grid_res;
@@ -232,6 +233,7 @@ void AMPM_Particle::Simulate()
 
 		//advect particles
 		p->x += p->v * dt;
+		//p->x += p->v;
 
 		//safety clamp to ensure particles don't exit simulation domain
 		p->x.X = FMath::Clamp(p->x.X, 1, grid_res - 2);

@@ -45,7 +45,7 @@ public:
 	{
 		FVector2f x; // position
 		FVector2f v; // velocity
-		FMatrix2x2 C; // affine momentum matrix, unused in this file
+		FMatrix2x2 C; // affine momentum matrix
 		float mass;
 		float padding; // just for performance
 	};
@@ -67,7 +67,7 @@ protected:
 	int NumParticles;
 	int NumParticlesForInstancedStaticMesh;
 	const float m_gravity = -0.05f;
-	const float dt = 0.01f;
+	const float dt = 0.007f;
 	const float iterations = 1.0f / dt;
 
 	UPROPERTY(VisibleAnywhere)

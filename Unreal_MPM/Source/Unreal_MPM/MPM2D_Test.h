@@ -3,37 +3,19 @@
 #pragma once
 
 #include "Components/InstancedStaticMeshComponent.h"
-//#include "MatrixTypes.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MPM2D.generated.h"
-
-
-struct Particle
-{
-	FVector2f x; //pos
-	FVector2f v; //vel
-	FMatrix2x2 C; //affine momentum from APIC
-	float mass;
-	float volume_0;
-};
-
-struct Cell
-{
-	FVector2f v;
-	float mass; //일정하게 유지
-};
+#include "MPM2D_Test.generated.h"
 
 UCLASS()
-class UNREAL_MPM_API AMPM2D : public AActor
+class UNREAL_MPM_API AMPM2D_Test : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AMPM2D();
-	virtual ~AMPM2D();
+	AMPM2D_Test();
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,41 +24,48 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void Initialize();
+
 	void ClearGrid();
 	void P2G();
 	void UpdateGrid();
 	void G2P();
 
-	void PipeLine();
-	void UpdateInstancedMesh();
+	void Simulate();
+	void UpdateParticles();
+	FVector2f MultiplyMatrixAndFloat(FMatrix2x2 m1, FVector2f v1);
 
-	FMatrix2x2 Transpose(FMatrix2x2 originMatrix);
-	FMatrix2x2 MinusMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
-	FMatrix2x2 MultiplyMatrix(FMatrix2x2 m1, FMatrix2x2 m2);
+public:
+	struct Particle
+	{
+		FVector2f x; //pos
+		FVector2f v; //vel
+		FMatrix2x2 C; //affine momentum from APIC
+		float mass;
+	};
+
+	struct Cell
+	{
+		FVector2f v;
+		float mass; //일정하게 유지
+	};
 
 public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;
 
-public:
 	//const variables
 	const int grid_res = 64;
 	const int NumCells = grid_res * grid_res;
-	
-	//const float dt = 0.2f;
-	const float dt = 0.1f;
-	const float iterations = (int)(1.0f / dt);
-	const float gravity = -1.0f;
+	const float dt = 1.0f;
+	const int iterations = (int)(1.0f / dt);
 
-	float elastic_lambda = 10.f;
-	float elastic_mu = 20.f;
+	const float gravity = -0.05f;
 
-	int NumParticles;
+	int NumParticles = 0;
 
 	TArray<Particle*> m_pParticles;
 	TArray<Cell*> m_pGrid;
-	TArray<FMatrix2x2> Fs; //for deformation gradient
 	TArray<FVector2f> TempPositions;
 
+	TArray<FVector2f> weights;
 };
