@@ -5,7 +5,7 @@ Material Point Method in Unreal Engine 5
 * 2023-1 소프트웨어융합캡스톤디자인
 * Unreal Engine 5에 MPM을 이용한 물리 시뮬레이션 구현
 * 대표 참고 논문 : A Moving Least Squares Material Point Method with Displacement Discontinuity and Two-Way Rigid Body Coupling (SIGGRAPH 2018)
-* 결과 영상
+* 결과 영상 <br/>
 https://www.youtube.com/watch?v=Ec28TGyPb-g <br/>
 https://www.youtube.com/watch?v=VGyG2pI7KA0
 ## 프로젝트 설명
@@ -26,7 +26,7 @@ https://www.youtube.com/watch?v=VGyG2pI7KA0
         * Chaos System의 PMatrix 타입 사용하여 matrix 연산 수행
 (https://docs.unrealengine.com/5.2/en-US/API/Runtime/ChaosCore/Chaos/PMatrix_FReal_3_3/PMatrix/)
 ## 실행 방법
-* branch를 3d branch로 바꾼 후 다운로드
+* 파일 다운로드
 * 프로젝트를 열고 Content\MY\Final 폴더 안에 존재하는 7가지의 블루프린트를 map에 배치 후 실행
   * 블루프린트 이름과 설명
     * _Test : no deformation 상황에서의 시뮬레이션
