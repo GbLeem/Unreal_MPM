@@ -1,7 +1,8 @@
 repo_name: GbLeem/Unreal_MPM
 report_id: 938be0c4ec572fe0ed5bd84f0e20a498
+version: 0.1
 repo_type: Public
-timestamp: '2023-11-30T18:50:37+00:00'
+timestamp: '2024-01-05T08:29:37+00:00'
 requested_by: GbLeem
 provider: github
 branch: main
@@ -15,6 +16,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/no-img-open-source.png
+  detection_source_url: https://github.com/GbLeem/Unreal_MPM
   detection_source: Repo Metadata
 - name: C#
   description: Simple, general-purpose, object-oriented programming language for the
@@ -25,6 +27,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1015/1200px-C_Sharp_wordmark.svg.png
+  detection_source_url: https://github.com/GbLeem/Unreal_MPM
   detection_source: Repo Metadata
 - name: C++
   description: Has imperative, object-oriented and generic programming features, while
@@ -35,6 +38,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1049/cplusplus.png
+  detection_source_url: https://github.com/GbLeem/Unreal_MPM
   detection_source: Repo Metadata
 - name: Git
   description: Fast, scalable, distributed revision control system
@@ -44,6 +48,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/GbLeem/Unreal_MPM
   detection_source: Repo Metadata
 - name: CUDA
   description: It provides everything you need to develop GPU-accelerated applications
@@ -53,4 +58,5 @@ tools:
   category: Application Utilities
   sub_category: Machine Learning Tools
   image_url: https://img.stackshare.io/service/2836/LUOWehvo_400x400.jpeg
+  detection_source_url: https://github.com/GbLeem/Unreal_MPM
   detection_source: Repo Metadata
