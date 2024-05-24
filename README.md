@@ -10,6 +10,7 @@ https://www.youtube.com/watch?v=Ec28TGyPb-g <br/>
 https://www.youtube.com/watch?v=VGyG2pI7KA0
 * **KSC 2023 제출 논문인 "UE5에서 MPM 시뮬레이션 구현과 최적화" 기반 코드**
   * 논문 링크 : https://drive.google.com/file/d/19WuqGOV3DkLhH5jX-ZsCFlgKKQW_LNYi/view?usp=sharing
+  * DB pia : https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11705636
 ## 프로젝트 설명
 * 개발 툴 및 사용 언어
     * Unreal Engine 5
